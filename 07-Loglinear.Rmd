@@ -528,6 +528,7 @@ car::Anova(fit)
 ```
 
 $$\mathrm{exp}[\beta(\upsilon_4 - \upsilon_1)(\nu_4 - \nu_1)] = \mathrm{exp}[0.286(4-1)(4-1) = 13.1$$
+
 ### 7.5.3 Ordinal Significance Tests of Independence
 
 ## 7.6 Loglinear Modeling of Count Response Variables *

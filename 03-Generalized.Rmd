@@ -71,6 +71,7 @@ theData %>%
 \end{equation} 
 
 $$\mathrm{log}\left[\frac{P(Y=1)}{1-P(Y=1)}\right] = \alpha + \beta_1x_1 + ... + \beta_px_p.$$
+
 ### 3.2.3 Example Snoring and Heart Disease {#x3.2.3}
 
 ```{r 3-2-3}
