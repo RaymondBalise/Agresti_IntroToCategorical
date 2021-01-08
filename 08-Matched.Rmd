@@ -1,0 +1,633 @@
+# 8 Models for Matched Pairs {#Matched}
+
+```{r}
+Opinions <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Envir_opinions.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+# Make contingency table
+tab <- as.matrix(addmargins(xtabs(~y1 + y2, data = Opinions)))
+
+library(tibble)
+# Add label as the first column and variable names
+`Table 8.1` <- tibble(`Pay Higher Taxes` = c("Yes", "No", "Total"), 
+                      Yes = tab[,1], No = tab[,2], Total = tab[,3])
+
+# horrible kludge
+`Table 8.1`$Yes <- paste(`Table 8.1`$Yes, c(" (pi11)", " (pi21)", ""))
+`Table 8.1`$No <- paste(`Table 8.1`$No, c(" (pi12)", " (pi22)", ""))
+
+library(flextable)
+my_header <- data.frame(
+  col_keys = colnames(`Table 8.1`),
+  line1 = c("Pay Higher Taxes", rep("Cut Living Standards", 2), "Total"),
+  line2 = colnames(`Table 8.1`)
+)
+
+flextable(`Table 8.1`, col_keys = my_header$col_keys) %>%
+  set_header_df(
+    mapping = my_header,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  autofit(part = "all") %>%    
+  align(align = "center", part = "all") %>% 
+  merge_h(part = "header") %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "body") %>% 
+  merge_v(part = "body") %>%
+  align_nottext_col(align = "center") %>% 
+  set_caption(caption = "Table 8.1") 
+```
+
+
+## 8.1 Comparing Dependent Proporitons for Binary Mached Pairs {#x8.1}
+
+### 8.1.1 McNemar Test Comparing Marginal Proportions
+$$H_0: P(Y_1 = 1) = P(Y_2 = 1), \mathrm{\ or\ equivalently\ } H_0: \pi_{12} = \pi_{21}.$$
+
+\begin{equation} 
+  z = \frac{n_{12}-(\frac{1}{2}n^*)}{\sqrt{n^*(\frac{1}{2})(\frac{1}{2})}}= \frac{n_{12}- n_{21}}{\sqrt{n_{12}+n_{21}}}
+  (\#eq:eq81)
+\end{equation} 
+
+
+```{r}
+Opinions <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Envir_opinions.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(dplyr)
+
+# Data file has 1144 lines, one for each of 1144 people. 
+# Each person has two binary responses (y1 and y2)
+Opinions %>% 
+  filter(row_number() %in% c(1, 2, n()))  
+
+tab <- xtabs(~y1 + y2, data = Opinions)
+tab
+
+# Don't use continuity correction, which is too conservative.
+mcnemar.test(tab, correct = FALSE)
+
+library(PropCIs)
+
+# specific to how to round 
+currentDigits = unlist(options("digits"))  # save current rounding
+options(digits = 1)
+
+# 95% Wald CI for difference of marginal probabilities 
+diffpropci.Wald.mp(107, 132, 1144, 0.95)  # (n21, n12, n, confidence level)
+diffpropci.Wald.mp(tab[2,1], tab[1,2], sum(tab), 0.95)  
+
+# 95% score CI for difference of marginal probabilities 
+scoreci.mp(tab[2,1], tab[1,2], sum(tab), 0.95)
+options(digits = currentDigits)  # reset rounding
+```
+
+### 8.1.2 Estimating the difference between Dependent Proportions
+
+## 8.2 Marginal Models and Subject-Specific Models for Matched Pairs {#x8.2}
+
+### 8.2.1 Marginal Models for Marginal Proportions {#x8.2.1}
+
+$$P(Y_1 = 1) = \alpha + \delta,\ P(Y_2= 1) = \alpha,$$ 
+
+$$P(Y_1 = 1) = \alpha + \delta x_i$$ 
+
+\begin{equation} 
+  \mathrm{logit}[P(Y_t = 1)] = \alpha + \beta x_i.
+  (\#eq:eq82)
+\end{equation} 
+
+### 8.2.2 Example: Enironmental Options Revisted
+
+```{r}
+Opinions <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Opinions.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+# Data file has 1144 lines, one for each of 1144 people. 
+# Each person has two binary responses (y1 and y2)
+Opinions %>% 
+  filter(row_number() %in% c(1, 2, 3, 4, n()-1, n()))  
+
+library(gee)
+# id identifies variable on which observe y1, y2
+fit <- gee(y ~ question, id = person, family = binomial(link = "identity"),
+           data = Opinions)
+
+summary(fit) # question parameter for identity link is difference of proportions
+
+fit2 <- gee(y ~ question, id = person, family = binomial(link = logit),
+           data = Opinions)
+summary(fit2) # question parameter for logit link is log odds ratio
+```
+
+### 8.2.3 Subject-Specific and Population-Averaging Tables {#x8.2.3}
+
+```{r}
+`Table 8.2` <- data.frame(Question = c("yi1: Pay higher taxes?", 
+                                       "yi2: Cut living standards?"),
+                          Yes = c(1, 1),
+                          No = c(0, 0))
+
+theHeader <- data.frame(col_keys = colnames(`Table 8.2`),
+                        line1 = c("Question", rep("Response", 2)),
+                        line2 = colnames(`Table 8.2`))
+
+library(flextable)
+library(dplyr)
+
+flextable(`Table 8.2`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  #autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Table 8.2: Representation of subject-specific table for matched pair contributing to count n_11 = 227 in Table 8.1.") %>% 
+  set_table_properties(width = .75, layout = "autofit")
+```
+
+### 8.2.4 Conditional Logistic Regression for Matched-Pairs* {#x8.2.4}
+
+\begin{equation} 
+  \mathrm{logit}[P(Y_{it} = 1)] = \alpha_i + \beta x_{it},\ t = 1,\ 2,
+  (\#eq:eq83)
+\end{equation} 
+
+
+$$P(Y_{i1} = 1) = \frac{\mathrm{exp}(\alpha_i + \beta)}{1 + \mathrm{exp}(\alpha_i + \beta)},\  P(Y_{i2} = 1) = \frac{\mathrm{exp}(\alpha_i)}{1 + \mathrm{exp}(\alpha_i)}.$$  
+### 8.2.5 Logistic Regression for Matched Case-Control Studies*
+
+```{r}
+library(tidyverse)
+`Table 8.3` <- tibble(`Normal Birth Weight (Controls)` = 
+                            c("Nonsmokers", 
+                              "Smokers"),
+                          Nonsmokers = c(159, 8),
+                          Smokers = c(22, 14))
+
+theHeader <- data.frame(col_keys = c("Normal Birth Weight (Controls)", "blank", "Nonsmokers", "Smokers"),
+                        line1 = c("Normal Birth Weight (Controls)", "", rep("Low Birth Weight (Cases)", 2)),
+                        line2 = c("Normal Birth Weight (Controls)", "blank", "Nonsmokers", "Smokers"))
+
+library(flextable)
+library(dplyr)
+
+library(officer)
+big_border = fp_border(color="black", width = 2)
+
+flextable(`Table 8.3`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  #autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Table 8.3") %>% 
+  set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  
+```
+
+```{r}
+library(tidyverse)
+`Table 8.4` <- tibble(`Smoker` = 
+                            c("No", 
+                              "Yes"),
+                          aCase = c(1, 0),
+                          aCon = c(1, 0),
+                          bCase = c(0, 1),
+                          bCon = c(1, 0),
+                          cCase = c(1, 0),
+                          cCon = c(0, 1),
+                          dCase = c(0, 1),
+                          dCon = c(0, 1))
+
+theHeader <- data.frame(col_keys = c("Smoker" ,
+                         
+                          "aCase",
+                          "aCon", 
+                          "blank1",
+                          "bCase",
+                          "bCon", 
+                           
+                          "blank2",
+                          "cCase",
+                          "cCon", 
+                           
+                          "blank3",
+                          "dCase",
+                          "dCon", 
+                          "blank4" ),
+                        line1 = c("Smoker", rep("a", 2), "", rep("b", 2), "", 
+                                  rep("c", 2), "", rep("d", 2),""),
+                        line2 = c("Smoker", rep(c("Case", "Control", " "), 4)))
+
+library(flextable)
+library(dplyr)
+
+flextable(`Table 8.4`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  #autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Table 8.4") %>% 
+  set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_top(part="body", border = big_border)  %>% 
+  hline_bottom(part="body", border = big_border)  
+```
+
+## 8.3 Comparing Proportions for Nominal Matched-Pairs Responses
+
+$$P(Y_1 = i) = P(Y_2 = i)\ \mathrm{for}\ i = 1, \dots, c,$$ 
+
+### 8.3.1 Marginal Homogeneity for Baseline-Category Logit Models 
+
+$$\mathrm{log}\left[\frac{P(Y_1 = j)}{P(Y_1 = c)}\right] = \alpha_j + \beta_j,\ \mathrm{log}\left[\frac{P(Y_2 = j)}{P(Y_2 = c)}\right] = \alpha_j$$ 
+### 8.3.2 Example: Coffee Brand Market Share
+
+```{r}
+Coffee <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Coffee.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(dplyr)
+library(tidyr)
+coffee_wide <- Coffee %>% 
+  tidyr::pivot_wider(id_cols = person, names_from=purchase, names_prefix = "y", 
+                     values_from = y)
+  
+
+
+# Make contingency table
+tab <- as.matrix(addmargins(xtabs(~y1 + y0, data = coffee_wide)))
+
+library(tibble)
+# Add label as the first column and variable names
+`Table 8.5` <- tibble(`First Purchase` = c("High Point", "Taster's Choice",
+                                           "Sanka", "Nescafe", "Brim", "Total"), 
+                      `High Point` = tab[, 1], `Taster's Choice` = tab[,2],
+                      `Sanka` = tab[, 3], `Nescafe` = tab[,4], `Brim` = tab[,5],
+                      Total = tab[, 6])
+
+
+theHeader <- data.frame(col_keys = c("First Purchase", "Blank", "High Point", 
+                                     "Taster's Choice", "Sanka", "Nescafe", 
+                                     "Brim", "Total"),
+                        line1 = c("First Purchase", "", 
+                                  rep("Second Purchase", 6)),
+                        line2 = c("First Purchase", "", "High Point", 
+                                     "Taster's Choice", "Sanka", "Nescafe", 
+                                     "Brim", "Total"))
+
+library(flextable)
+library(dplyr)
+
+library(officer)
+big_border = fp_border(color="black", width = 2)
+
+flextable(`Table 8.5`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  align(j="First Purchase", align= "left", part = "all") %>% 
+  #autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Table 8.5") %>% 
+  set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  
+```
+Using GEE methodology, we can fit the baseline-category logit model, as shown in the following `R` output.
+
+
+```{r}
+Coffee <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Coffee.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+# subject-specific data file, purchase is 1 for first purchase 0 for second
+Coffee %>% 
+  filter(row_number() %in% c(1, 2, 3, 4, n()-1, n()))  
+
+
+library(multgee)  # package for multinomial GEE analysis
+fit <- nomLORgee(y ~ purchase, id = person, LORstr = "independence", 
+                 data = Coffee)
+# san.se = robust SE
+# beta01 is alpha1 in our notation
+summary(fit)  # nomLORgee uses baseline category logits for nominal response 
+
+fit0 <- nomLORgee(y ~ 1, id = person, LORstr = "independence", data = Coffee)
+
+# Model under H_0: y ~ 1 null model (marginal homogeneity)
+waldts(fit0, fit)
+
+with(Coffee, mantelhaen.test(purchase, y, person))
+```
+
+### 8.3.3 Using Cochran-Mantel-Haenszel Test to Test marinal Homogeneity*
+
+### 8.3.4 Symmetry and Quasi-Symmetry Models for Square Contingency Tables {#x8.3.4}
+
+$$\pi_{ij} = \pi_{ji}$$ 
+$$\mathrm{log}(\pi_{ij}/\pi_{ji}) = 0\ \mathrm{for\ all}\ i \ \mathrm{and}\ j.$$ 
+
+$$r_{ij} = (n_{ij} - n_{ji})/\sqrt{n_{ij} + n_{ji}}.$$ 
+
+\begin{equation} 
+  \mathrm{log}(\pi_{ij}/\pi_{ji}) = \beta_i - \beta_j\  \mathrm{for\ all}\ i \ \mathrm{and}\ j.
+  (\#eq:eq84)
+\end{equation} 
+
+### 8.3.5 Example: Coffee Brand market Share Revisited
+
+```{r}
+Coffee2 <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Coffee2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+# quasi-symmetry model, nij and nji are opposite cell counts in table 8.5
+Coffee2
+
+symm <- glm(nij/(nij+nji) ~ -1, family = binomial, weights = nij + nji, 
+            data = Coffee2)
+summary(symm)  # symmetry model, -1 in model statement sets intercept = 0
+
+QS <- glm(nij/(nij+nji) ~ -1 + H + T + S + N + B , family = binomial, 
+          weights = nij + nji, data = Coffee2)
+summary(QS)
+```
+
+## 8.4 Comparing Proportions for Ordinal Matched-Pairs Responses
+
+### 8.4.1 Marginal Homogeneity and Cummulative Logit Marginal Model
+
+$$\mathrm{logit}[P(Y_1 \le j)] = \alpha_j + \beta,\ \mathrm{logit}[P(Y_2 \le j)] = \alpha_j$$
+
+### 8.4.2 Example: Recycle or Drive Less to Help the Environment? {#x8.4.2}
+
+```{r}
+Envir <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Envir.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(dplyr)
+library(tidyr)
+envir_wide <- Envir %>% 
+  tidyr::pivot_wider(id_cols = person, names_from=question, names_prefix = "y", 
+                     values_from = y)
+  
+
+
+# Make contingency table
+tab <- as.matrix(xtabs(~y1 + y0, data = envir_wide))
+
+library(tibble)
+# Add label as the first column and variable names
+`Table 8.6` <- tibble(`Recycle` = c("Always", "Often", "Sometimes", "Never"), 
+                      `Always` = tab[, 1], `Often` = tab[,2], 
+                      `Sometimes` = tab[, 3], `Never` = tab[,4])
+
+
+theHeader <- data.frame(col_keys = c("Recycle", "Blank", "Always", "Often",
+                                           "Sometimes", "Never"),
+                        line1 = c("Recycle", "", rep("Drive Less", 4)),
+                        line2 = c("Recycle", "", "Always", "Often", 
+                                  "Sometimes", "Never"))
+
+library(flextable)
+library(dplyr)
+
+library(officer)
+big_border = fp_border(color="black", width = 2)
+
+flextable(`Table 8.6`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  align(j="Recycle", align= "left", part = "all") %>% 
+  autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Table 8.6") %>% 
+  #set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  
+```
+
+```{r}
+Envir <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Envir.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Envir %>% 
+  filter(row_number() %in% c(1, 2, n()-1, n()))  
+
+library(multgee)
+fit <- ordLORgee(y ~ question, id = person, LORstr = "independence", 
+                 data = Envir)
+summary(fit)
+```
+
+### 8.4.3 An Ordinal Quasi-Symmetry Model * 
+
+\begin{equation} 
+  \mathrm{log}(\pi_{ij}/\pi_{ji}) = \beta(u_j = u_i).
+  (\#eq:eq85)
+\end{equation}
+
+### 8.4.4 Example: Recycle or Drive Less Revisited?
+
+```{r}
+Envir <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Environment.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+# nij and nji are opposite cell counts in Table 8.6
+# x = j-1 = distance between categories, 6 pairs of opposite cells
+Envir  
+
+fit <- glm(nij/(nij+nji) ~ -1 + x, family = binomial, weight = nij + nji, 
+           data = Envir)
+summary(fit)  # ordinal quasi symmetry; -1 in model sets intercept = 0
+
+fit.QS <- glm(nij/(nij+nji) ~ -1 + always + often + sometimes + never, 
+              family = binomial, weight = nij + nji, data = Envir)
+summary(fit.QS)  # quasi symmetry
+```
+
+## 8.5 Analyzing Rater Agreement *
+
+
+### 8.5.1 Example: Agreement on Carcinoma Diagnosis
+
+```{r}
+Pathology <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Pathologists.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(dplyr)
+library(tibble)
+
+# Make contingency table
+mat <- matrix(Pathology$count, ncol = 4,byrow = T) %>% 
+  addmargins()
+  
+colnames(mat) <- c("V1", "V2", "V3", "V4", "Sum") 
+  
+`Table 8.7` <-  
+  mat %>% 
+  as_tibble() %>% 
+  bind_cols(`Pathologist X` = c(1:4, "Total")) %>% 
+  select(`Pathologist X`, everything())
+  
+theHeader <- data.frame(col_keys = c("Pathologist X", "Blank", "V1", "V2",
+                                           "V3", "V4", "Sum"),
+                        line1 = c("Pathologist X", "", rep("Pathologist Y", 4),
+                                  "Total"),
+                        line2 = c("Pathologist X", "", "1", "2", "3", "4",
+                                  "Total"))
+
+library(flextable)
+library(dplyr)
+
+library(officer)
+big_border = fp_border(color="black", width = 2)
+
+flextable(`Table 8.7`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  align(j="Pathologist X", align= "left", part = "all") %>% 
+  autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Table 8.7") %>% 
+  #set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  
+```
+
+### 8.5.2 Cell Residuals for Independence Model
+
+### 8.5.3 Quasi-Independence Model
+
+```{r}
+Pathology <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Pathologists.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Pathology  # diag: separate category (1, 2, 3, 4) for each main-diagonal cell 
+# and a single (0) for all other cells
+
+fit <- glm(count ~ factor(X) + factor(Y) + factor(diag), family = poisson,
+           data = Pathology)
+
+# quasi independence, not showing intercept or main effects
+summary(fit)
+```
+
+### 8.5.4 Quasi Independence and Odds Ratios Summarizing Agreement
+
+$$\tau_{ab} = \mathrm{exp}(\delta_a + \delta_b).$$ 
+
+###  8.5.5 Kappa Summary Measure of Agreement
+
+$$\kappa = \frac{\sum_i\pi_{ii}-\sum_i\pi_{i+}\pi_{+i}}{1-\sum_i\pi_{i+}\pi_{+i}}$$ 
+
+```{r}
+library(psych)
+dat <- matrix(Pathology$count, ncol = 4, byrow = TRUE)
+cohen.kappa(dat)
+```
+
+## 8.6 Bradley-Terry Model for Paired Preferences * 
+
+```{r}
+`Table 8.8` <- tibble(Winner = c("Djokovic", "Federer", "Murray", "Nadal", 
+                                 "Wawrinka"),
+                      Djokovic = c("-", 6, 3, 2, 3), 
+                      Federer = c(9, "-", 0 ,1 , 2),
+                      Murray = c(14, 5, "-", 4, 2),
+                      Nadal = c(9, 5, 2, "-", 3),
+                      Wawrinka = c(4, 7, 2, 4, "-"))
+
+theHeader <- data.frame(col_keys = c("Winner", "Blank", "Djokovic", "Federer",
+                                     "Murray", "Nadal", "Wawrinka"),
+                        line1 = c("Winner", "", rep("Looser", 5)),
+                        line2 = c("Winner", "", "Djokovic", "Federer",
+                                     "Murray", "Nadal", "Wawrinka"))
+
+library(flextable)
+library(dplyr)
+
+library(officer)
+big_border = fp_border(color="black", width = 2)
+
+flextable(`Table 8.8`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  align(j="Winner", align= "left", part = "all") %>% 
+  autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Resuls of 2014-2018 matches for men tennis players.") %>% 
+  #set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  
+
+```
+
+
+### 8.6.1 The Bradley-Terry Model of Quasi-Symmetry
+
+$$\mathrm{logit}(\Pi_{ij}) = \mathrm{log}(\Pi_{ij}/\Pi_{ji}) = \beta_i - \beta_j.$$ 
+
+$$\hat\Pi_{ij} = \mathrm{exp}(\hat\beta_i - \hat\beta_j)/[1 + \mathrm{exp}(\hat\beta_i - \hat\beta_j)].$$
+
+### 8.6.2 Example: Ranking Men Tennis Players
+
+```{r}
+Tennis <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Tennis.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+# Djokovic won 9 lost 6 vs Fed
+# Federer always beat Murray
+
+fit <- 
+  glm(nij/(nij + nji) ~ -1 + Djokovic + Federer + Murray + Nadal + Wawrinka, 
+      family = binomial, weights = nij + nji, data = Tennis)
+summary(fit) 
+```
+
+$$\hat\Pi_{ij} = \frac{\mathrm{exp}(\hat\beta_i - \hat\beta_j)}{1 + \mathrm{exp}(\hat\beta_i - \hat\beta_j)} = \frac{\mathrm{exp}(1.136 - 1.176)}{1 + \mathrm{exp}(1.136 - 1.176)} = 0.49$$

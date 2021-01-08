@@ -1,0 +1,333 @@
+# 11 Classification and Smoothing {#Classification}
+
+## 11.1 Classification: Linear Discrinant Analysis
+
+### 11.1.1 Classification with Fisher's Linear Discriminant Function
+
+### 11.1.2 Example: Horseshoe Crab Satellites Revisited
+
+```{r}
+Crabs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Crabs.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(MASS)
+lda(y~width + color, data = Crabs)
+
+fit.lda <- lda(y ~ width + color, prior = c(0.5, 0.5), CV = TRUE, data = Crabs)
+# if prior note specified, uses sample proportions in the two categories
+
+xtabs(~Crabs$y + fit.lda$class)  # using cross-validation (CV = TRUE)
+```
+
+
+```{r table11-1}
+
+t1df <- as.data.frame.matrix(xtabs(~Crabs$y + fit.lda$class)) %>% 
+  rename("t1_1" = `1`) %>% 
+  rename("t1_0" = `0`) %>% 
+  map_df(rev)
+
+
+prop <- sum(Crabs$y) / nrow(Crabs)
+prop
+
+fit <- glm(y ~ width + factor(color), family = binomial, data = Crabs)
+
+predicted <- as.numeric(fitted(fit) > 0.6416185) # predict y=1 when est. > observed probability
+t2df <- as.data.frame.matrix(xtabs(~ Crabs$y + predicted)) %>% 
+  rename("t2_1" = `1`) %>% 
+  rename("t2_0" = `0`) %>% 
+  map_df(rev)  # purrr::map_df(rev) reverses order of the data frame
+
+
+Actual <-tibble(Actual = c("y = 1", "y = 0")) 
+Total <- tibble(Total = c(111, 62))  
+  
+
+library(flextable)
+suppressMessages(conflict_prefer("compose", "flextable"))
+
+library(dplyr)  # for bind_cols()
+library(officer) # for fp_border()
+
+# Make analysis table
+`Table 11.1` <- bind_cols(Actual, t1df, t2df, Total)
+
+# The header needs blank columns for spaces in actual table.
+# The wide column labels use Unicode characters for pi. Those details are 
+#   replaced later with the compose() function.
+theHeader <- data.frame(
+  col_keys = c("Actual", "blank", "t1_1", "t1_0",
+               "blank2", "t2_1", "t2_0", 
+               "blank3", "Total"),
+  line1 = c("Actual", "", 
+            rep("Discriminat Analysis", 2), "", 
+            rep("Logistic Regression", 2), "",
+            "Total"),
+  line2 = c("Actual", "", "t1_1", "t1_0", "", "t2_1", "t2_0", "", "Total"))
+
+# Border lines
+big_border <- fp_border(color="black", width = 2)
+
+# Make the table - compose uses Unicode character 
+# https://stackoverflow.com/questions/64088118/in-r-flextable-can-complex-symbols-appear-in-column-headings
+flextable(`Table 11.1`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(mapping = theHeader, key = "col_keys") %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Classification tables for horseshoe crab data with width and factor color predictors. Logistic model does not match book.") %>% 
+  set_table_properties(width = 1, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  %>% 
+  # i = 2 refers to second row of column headings
+  compose(part = "header", i = 2, j = "t1_1",  
+          value = as_paragraph("y\U0302 = 1")) %>% 
+  compose(part = "header", i = 2, j = "t1_0", 
+          value = as_paragraph("y\U0302 = 0")) %>% 
+  compose(part = "header", i = 2, j = "t2_1", 
+          value = as_paragraph("y\U0302 = 1")) %>% 
+  compose(part = "header", i = 2, j = "t2_0", 
+          value = as_paragraph("y\U0302 = 0"))
+```
+
+### 11.1.3 Discriminant Analysis Versus Logistic Regression
+
+## 11.2 Classification: Tree-Based Prediction
+
+### 11.2.1 Classification Trees
+
+### 11.2.2 Example: A classification Tree for Horseshoe Crab Mating
+
+```{r}
+Crabs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Crabs.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(rpart)
+fit <- rpart(y ~ color + width, method = "class", data = Crabs)
+p.fit <- prune(fit, cp = 0.02) 
+
+library(rpart.plot)
+rpart.plot(p.fit, extra = 1, digits = 4, box.palette = 0)
+```
+
+### 11.2.3 How Does the Classification Tree Grow?
+
+### 11.2.4 Pruning a Tree and Checking Prediction Accuracy
+
+```{r}
+Crabs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Crabs.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(rpart)
+# method = "class" for categorical y 
+fit <- rpart(y ~ color + width, method = "class", data = Crabs)
+# plots error rate by cp = complexity parameter for pruning
+plotcp(fit)
+# select leftmost cp with mean error below horizontal line (1SE above min.)
+
+p.fit <- prune(fit, cp = 0.056)
+
+library(rpart.plot)
+rpart.plot(p.fit, extra = 1, digits = 4, box.palette = 0)
+```
+
+### 11.2.5 Classification Trees Versus Logistic Regression and Discriminant Analysis 
+
+## 11.3 Cluster Analysis for Categorical Responses
+
+### 11.3.1 Measuring Dissimilarity Between Observations
+
+```{r}
+library(flextable)
+suppressMessages(conflict_prefer("compose", "flextable"))
+
+library(dplyr)  # for bind_cols()
+library(officer) # for fp_border()
+
+# Make analysis table
+`Table 11.2` <- bind_cols(`Observation 1` = c("1", "0"), 
+                          `1` = c("a", "c"),
+                          `0` = c("b", "d"))
+
+# The header needs blank columns for spaces in actual table.
+# The wide column labels use Unicode characters for pi. Those details are 
+#   replaced later with the compose() function.
+theHeader <- data.frame(
+  col_keys = c("Observation 1", "blank", "1", "0"),
+  line1 = c("Observation 1", "", 
+            rep("Observtion 2", 2)),
+  line2 = c("Observation 1", "", "1", "0"))
+
+# Border lines
+big_border <- fp_border(color="black", width = 2)
+
+# Make the table - compose uses Unicode character 
+# https://stackoverflow.com/questions/64088118/in-r-flextable-can-complex-symbols-appear-in-column-headings
+flextable(`Table 11.2`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(mapping = theHeader, key = "col_keys") %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Cross-classification of two observtions on p binary response variables where p = (a + b + c + d)") %>% 
+  set_table_properties(width = .75, layout = "autofit") %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_top(part="body", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border)  
+```
+
+### 11.3.2 Hierarchical Clustering Algorithm and Dendrograms
+
+### 11.3.3 Example: Clustering States on Presidential Elections
+
+```{r}
+Elections <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Elections2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+names(Elections) <- c("Number", "State", seq(1980, 2016, by =4))
+
+# function to recode "1" to "D" and "0" to "R"
+rd <- function(x){
+  if_else(x == 1, "D", "R")
+}
+
+`Table 11.3` <- Elections %>% 
+  select(-"Number") %>% 
+  mutate(across(where(is.numeric), rd))
+
+knitr::kable(`Table 11.3`)
+```
+
+```{r}
+Elections <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Elections2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+
+distances <- dist(Elections[, 3:12], method = "manhattan")
+
+#manhattan measure dissimilarity by no. of election outcomes that differ
+democlust <-hclust(distances, "average")  # hierarchical clustering
+
+plot(democlust, labels = Elections$state)
+```
+
+```{r}
+library(gplots)
+heatmap.2(as.matrix(Elections[, 3:12]), labRow = Elections$state, 
+          dendrogram = "row", Colv=FALSE)
+```
+
+
+## 11.4 Smoothing: Generalized Additive Models
+
+### 11.4.1 Generalized Additive Models
+
+$$g(\mu_i) = s_1(X_{i1}) + s_2(X_{i2}) + \dots + s_p(X_{ip}),$$
+
+### 11.4.2 Example: GAMs for Horseshoe Crab Data
+
+### 11.4.3 How Much Smoothing? The Bias/Variance Tradeoff
+
+### 11.4.4 Example: Smoothing to Portray Probability of Kyphosis
+
+```{r}
+Kyphosis <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Kyphosis.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Kyphosis %>% 
+  filter(row_number() %in% c(1, n()))  
+
+gam.fit1 <- gam(y~ s(x, df=1), family = binomial, data = Kyphosis)  # linear complexity
+gam.fit2 <- gam(y~ s(x, df=2), family = binomial, data = Kyphosis)  # quadratic
+gam.fit3 <- gam(y~ s(x, df=3), family = binomial, data = Kyphosis)  # cubic
+anova(gam.fit1, gam.fit2, gam.fit3)
+
+plot(y ~ x, xlab = "Age", ylab = "Presence of Kythosis", data = Kyphosis)
+curve(predict(gam.fit2, data.frame(x = x), type = "resp"), add = TRUE)
+```
+
+## 11.5 Regularization for High-Dimensional Categorical Data (Large *p*)
+
+### 11.5.1 Penalized-Likelihood Methods and $L_q$-Norm Smoothing
+
+$$L^*(\beta) = L(\beta)-s(\beta),$$
+$$s(\beta)= \lambda\sum_{j=1}^p|\beta_j|^q$$
+
+### 11.5.2 Implementing the Lasso
+
+### 11.5.3 Example: Predicting Option on Abortion with Student Survey 
+
+```{r}
+Students <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Students.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+fit <- glm(abor ~ gender + age + hsgpa + cogpa + dhome + dres + tv + sport +  
+           news + aids + veg + ideol + relig + affirm, 
+           family = binomial, data = Students)
+
+# news LR P-value = 0.0003
+# ideol LR P-value = 0.0010
+summary(fit)
+
+# LR test that all 14 betas = 0
+1 - pchisq(62.719 - 21.368, 59-45)
+```
+
+```{r}
+library(tidyverse)
+Students <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Students.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+# explanatory variables for lasso
+x <- with(Students, cbind(gender, age, hsgpa, cogpa, dhome, dres, tv, sport, 
+                          news, aids, veg, ideol, relig, affirm))
+abor <- Students$abor
+
+library(glmnet)
+# alpha = 1 is lasso
+fit.lasso <- glmnet(x, abor, alpha = 1, family = "binomial")
+
+plot(fit.lasso)
+set.seed(1)
+est <- cv.glmnet(x, abor, alpha = 1, family = "binomial", 
+                 type.measure= "class") # , maxit=1000000000)
+
+# this is a random variable changes from run to run. It is 0.0661 in the book. 
+est$lambda.min  # best lambda by 10-fold cross-validation 
+
+# also a random variable.  It is 0.1267 in the book.
+theEst <- est$lambda.1se  # lambda suggested by one-standard-error rule 
+theEst
+
+coef(glmnet(x, abor, alpha = 1, family = "binomial", lambda = 0.1267787))
+coef(glmnet(x, abor, alpha = 1, family = "binomial", lambda = theEst))
+
+summary(glm(abor ~ ideol + relig + news, family = binomial, data = Students))
+
+```
+
+```{r}
+summary(glm(abor ~ ideol + relig + news, family = binomial, data = Students))
+```
+
+### 11.5.4 Why Shrink ML Estimates Toward 0?
+
+### 11.5.5 Issues In variable Selection (Dimension Reduction)
+
+### 11.5.6 Controlling the False Discovery Rate
+
+```{r}
+pvals <- c(0.0001, 0.0004, 0.0019, 0.0095, 0.020, 0.028, 0.030, 0.034, 
+           0.046, 0.32, 0.43, 0.57, 0.65, 0.76, 1.00)
+p.adjust(pvals, method = c("bonferroni"))
+p.adjust(pvals, method = c("fdr"))
+```
+
+### 11.5.7 Large $p$ also Makes Bayesian Inference Challenging
+

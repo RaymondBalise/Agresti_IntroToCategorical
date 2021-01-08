@@ -1,0 +1,187 @@
+# 9 Marginal Modeling of Correlated, Clustered Responses {#Marginal}
+
+## 9.1 Marginal Models Vs Subject-Specific Models
+
+### 9.1.1 Marginal Models for a Clustered Binary Response
+
+### 9.1.2 Example: Repeated Responses on Similar Survey Questions {#x9.1.2}
+
+```{r}
+Abortion <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Abortion.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+library(tidyverse)
+a_wide <- 
+  Abortion %>% 
+  tidyr::pivot_wider(id_cols = c(person, gender), # do not pivot
+                     names_from=situation,  # variable with situation number
+                     names_prefix = "sit",  # new name prefix
+                     values_from = response) %>% # 
+  mutate(pattern = paste(sit1, sit2, sit3, sep = ",")) %>%  # make word with pattern 
+  mutate(pattern = factor(pattern, 
+                          levels = c("1,1,1", "1,1,0", "0,1,1", "0,1,0", 
+                                     "1,0,1", "1,0,0",  "0,0,1","0,0,0"), 
+                          ordered = TRUE))
+
+`Table 9.1` <- as.data.frame.matrix(xtabs( ~ a_wide$gender + a_wide$pattern ), 
+                            row = 2 ) %>% 
+  bind_cols(Gender = c("Male", "Female")) %>%  # add sex
+  select(Gender, everything())  # reorder columns
+
+
+
+theHeader <- data.frame(col_keys = colnames(`Table 9.1`),
+                        line1 = c("Gender",  
+                                  rep("Sequene of Responses in Three Situations", 8)),
+                        line2 = colnames(`Table 9.1`))
+
+library(flextable)
+
+flextable(`Table 9.1`, col_keys = theHeader$col_keys) %>% 
+  set_header_df(
+    mapping = theHeader,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all") %>% 
+  align(j="Gender", align= "left", part = "all") %>% 
+  #autofit() %>% 
+  empty_blanks() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Support (1 = yes, 0 = no) for legalized abortion in three situations, by gender") %>% 
+  set_table_properties(width = .75, layout = "autofit")
+```
+
+### 9.1.3 Subject-Specific Models for a Repeated Response
+
+## 9.2 Marginal Modeling: The Generalized Estimating Equations (GEE) Approach
+
+### 9.2.1 Quasi-Likelihood Methods
+
+### 9.2.2 Generalized Estimating Equation Methodology: Basic Ideas
+
+### 9.2.3 Example: Opinion about Legalized Abortion Revisited {#x9.2.3}
+
+```{r}
+Abortion <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Abortion.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+library(tidyverse)
+Abortion %>% 
+  filter(row_number() %in% c(1, 2, 3, n()-2, n()-1, n()))  
+
+Abortion <- 
+  Abortion %>% 
+  mutate(sit = factor(situation, levels = c(3, 1, 2)))
+
+fit.glm <- 
+  glm(response ~ sit + gender, family = binomial, data = Abortion)
+
+# ML estimate for 5550 independent observations
+summary(fit.glm)
+```
+
+```{r}
+library(gee)
+# cluster on "id" variable
+fit.gee <- gee(response ~ sit + gender, id = person, family = binomial,
+               corstr = "independence", data = Abortion)
+summary(fit.gee)
+```
+
+```{r}
+fit.gee2 <- 
+  gee(response ~ sit + gender, id = person, family = binomial,
+               corstr = "exchangeable", data = Abortion)
+summary(fit.gee2)
+
+
+fit.geeUn <- 
+  gee(response ~ sit + gender, id = person, family = binomial,
+               corstr = "unstructured", data = Abortion)
+summary(fit.geeUn)$working.correlation
+```
+
+### 9.2.4 Limitations of GEE Compared to ML
+
+```{r}
+library(geepack)  # geepack library enables Wald tests comparing models
+fit <- 
+  geeglm(response ~ gender + factor(situation) , id = person, family = binomial,
+         corstr = "exchangeable", data = Abortion)
+anova(fit)
+```
+
+## 9.3 Marginal Modeling for Clustered Multinomial Responses
+
+### 9.3.1 Example: Insomnia Study {#x9.3.1}
+$$\hat\beta_1 = 1.038\ (0.168),\ \hat\beta_2 = 0.034\ (0.238),\ \hat\beta_3 = 0.708\ (0.224)$$
+
+```{r}
+Insomnia <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Insomnia.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Insomnia %>% 
+  filter(row_number() %in% c(1, 2, n()-1, n()))  
+
+library(multgee)
+fit <- ordLORgee(response ~ occasion + treat + occasion:treat, id = case,
+                 LORstr = "independence", data = Insomnia)
+summary(fit)
+```
+
+### 9.3.2 Alternative GEE Specification of Working Association
+
+## 9.4 Transitional Modeling, Given the Past
+
+### 9.4.1 Transitional Models with Explanatory Variables
+
+$$\mathrm{logit}[P(Y_t = 1)] = \alpha + \beta y_{t-1} + \beta_1 x_{1t} + \cdots + \beta_p x_{pt},$$ 
+
+### 9.4.2 Example: Respiratory Illness and Maternal Smoking
+$$\mathrm{logit}[P(Y_t = 1)] = \alpha + \beta y_{t-1} + \beta_1 s + \beta_2 t,\ t = 8, 9, 10$$
+
+```{r}
+Respiratory <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Respiratory.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Respiratory 
+
+fit <- glm(yes/(yes+no) ~ previous + s + t, family = binomial, 
+           weights = no + yes, data = Respiratory)
+summary(fit)
+
+car::Anova(fit)
+```
+
+### 9.4.3 Group Comparisons Treating Initial Response as Covariate {#x9.4.3}
+
+\begin{equation} 
+\mathrm{logit}[P(Y_2 \le j)] = \alpha_j + \beta_1 x + \beta_2 y_1
+  (\#eq:eq91)
+\end{equation} 
+
+```{r}
+Insomnia2 <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Insomnia2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Insomnia2 
+
+library(VGAM)
+fit <- vglm(cbind(follow1, follow2, follow3, follow4) ~ treatment + initial,
+            family = cumulative(parallel = TRUE), data = Insomnia2)
+summary(fit)
+
+detach("package:multgee", 
+       unload = TRUE)
+
+detach("package:VGAM", 
+       unload = TRUE) # contains function s that conflicts with gam
+```
+
+## 9.5 Dealing with Missing Data *
+
+### 9.5.1 Missing at Random: Impact on ML and GEE Methods
+
+### 9.5.2 Multiple Imputation: Monte Carlo Prediction of missing Data

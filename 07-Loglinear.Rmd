@@ -1,0 +1,701 @@
+# 7 Loglinear Models for Contingency Tables and Counts {#Loglinear}
+
+## 7.1 Loglinear Models for Counts in Contingency Tables
+
+$$\pi_{ij} = P(X=i)P(Y=j) = \pi_{i+}\pi_{+j},\ i = 1, \dots, r,\ j = 1, \dots, c.$$
+
+### 7.1.1 Loglinear Model of Independence for Two-Way Contingency Tables
+
+\begin{equation} 
+  P(Y=1) = \mathrm{log}\mu_{ij} = \lambda + \lambda_i^X + \lambda_j^Y,
+  (\#eq:eq71)
+\end{equation} 
+
+### 7.1.2 Interpretation of Parameters in the Independence Model
+
+### 7.1.3 Example: Happiness and Belief in Heaven
+
+```{r}
+HappyHeaven <-  
+  read.table("http://users.stat.ufl.edu/~aa/cat/data/HappyHeaven.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+HappyHeaven
+
+
+with(HappyHeaven, 
+  questionr::wtd.table(happy, heaven, weight = count)
+)
+
+# canonical link for Poisson is log, so "(link = log)" is not necessary
+# loglm() function in MASS library also fits loglinear models
+fit <- glm(count ~ happy + heaven, family = poisson, data = HappyHeaven)
+
+summary(fit)
+```
+
+### 7.1.4 Saturated Model for Two-Way Contingency Tables
+
+$$
+\mathrm{log}\mu_{ij} = \lambda + \lambda_i^X + \lambda_j^Y + \lambda_{ij}^{XY}
+$$
+$$\mathrm{log}\theta = \mathrm{log}\big( \frac{\mu_{11}\mu_{22}}{\mu_{12}\mu_{21}}\big) = \mathrm{log}\mu_{11} + \mathrm{log}\mu_{22} - \mathrm{log}\mu_{12} - \mathrm{log}\mu_{21}.$$  
+
+### 7.1.5 Loglinear Models for Three-Way Contingency Tables
+
+$$\mathrm{log}\mu_{ijk} =\lambda + \lambda_i^X+ \lambda_j^Y + \lambda_k^Z +\lambda_{ik}^{XZ} + +\lambda_{jk}^{YZ}.$$
+$$\mathrm{log}\mu_{ijk} =\lambda + \lambda_i^X+ \lambda_j^Y + \lambda_k^Z + \lambda_{ij}^{XY} +\lambda_{ik}^{XZ} + +\lambda_{jk}^{YZ}.$$
+
+### 7.1.6 Two-Factor Parameters Describe Conditional Associations
+
+###  7.1.7 Example: Student Alcohol, Cigarette, and Marijuana Use
+
+```{r 7-1-7table1}
+Drugs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Substance.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Drugs <- Drugs %>% 
+  rename(A = "alcohol") %>% 
+  rename(C = "cigarettes") %>% 
+  rename(M = "marijuana")
+
+`Table 7.1` <-  bind_cols(`Alcohol Use` = c("Yes", "", "No", ""),
+  `Defendants' Race` = rep(c("Yes", "No"),2),
+  matrix(Drugs$count, ncol = 2,byrow = T,
+         dimnames = list(NULL,
+         c("Marijuana Use (Yes)", "Marijuana Use (No)")))) 
+
+knitr::kable(`Table 7.1`)
+```
+
+```{r 7-1-7table2}
+A_C_M <- glm(count ~ A + C + M, family = poisson, data = Drugs)
+`(A, C, M)` <- round(exp(predict(A_C_M, data.frame(Drugs))), 1) 
+
+AM_CM <- glm(count ~ A + C + M + A:M + C:M, family = poisson, data = Drugs)
+`(AM, CM)` <- round(exp(predict(AM_CM, data.frame(Drugs))), 2) 
+
+AC_AM_CM <- glm(count ~ A + C + M + A:C + A:M + C:M, family = poisson, data = Drugs)
+`(AC, AM, CM)` <- round(exp(predict(AC_AM_CM, data.frame(Drugs))), 1) 
+
+ACM <- glm(count ~ A + C + M + A:C + A:C + A:M + C:M + A:C:M, family = poisson, data = Drugs)
+`(ACM)` <- round(exp(predict(ACM, data.frame(Drugs))), 1)
+
+`Table 7.2` <-  bind_cols(`Alcohol Use` = c("Yes", rep("", 3), "No", rep("",3)),
+  `Cigarette Use` = rep(c("Yes", " ", "No", ""),2),
+  `Marijuana Use` = rep(c("Yes", "No"), 4),
+  `(A, C, M)` = `(A, C, M)`,
+  `(AM, CM)` = `(AM, CM)`,
+  `(AC, AM, CM)` = `(AC, AM, CM)`,
+  `(ACM)` = `(ACM)`) 
+
+knitr::kable(`Table 7.2`)
+```
+
+```{r 7-1-7table3}
+# Table 7.3
+line2 <- round(exp(coef(AM_CM)[c("Ayes:Myes", "Cyes:Myes")]), 1)
+line3 <- round(exp(coef(AC_AM_CM)[c("Ayes:Cyes", "Ayes:Myes", "Cyes:Myes")]), 1)
+line4 <- round(exp(coef(ACM)[c("Ayes:Cyes", "Ayes:Myes", "Cyes:Myes")]), 1)
+
+`Table 7.3` <-  
+  bind_cols(Model = c("(A, C, M)",  "(AM, CM)", "(AC, AM, CM)", "(ACM)"),
+            matrix(c(rep (1.0, 3), 
+                     1.0, line2["Ayes:Myes"], line2["Cyes:Myes"],
+                     line3["Ayes:Cyes"], line3["Ayes:Myes"], line3["Cyes:Myes"],
+                     line4["Ayes:Cyes"], line4["Ayes:Myes"], line4["Cyes:Myes"]), 
+                   ncol = 3, byrow = T,
+                   dimnames = list(NULL, c("AC", "AM", "CM"))))
+
+knitr::kable(`Table 7.3`)
+
+```
+
+$$2.7 = \frac{(909.24 + 438.84)*(0.24 + 179.84)}{(45.76 + 555.16)*(4.76 + 142.16)}.$$
+
+```{r, eval=FALSE}
+AM_CM <- glm(count ~ A + C + M + A:M + C:M, family = poisson, data = Drugs)
+round(exp(predict(AM_CM, data.frame(Drugs))), 2)  # Table 7.2 
+round(exp(coef(AM_CM)), 1) # Table 7.3
+
+is2.7 <- ((909.2395833 + 438.8404255)*(0.2395833 + 179.8404255)) / 
+  ((45.7604167 + 555.1595745)*(4.7604167 + 142.1595745))
+
+# collapse over M
+AC <-
+  Drugs %>% 
+  group_by(A, C) %>% 
+  summarise(Count2 = sum(count), .groups = "drop_last")
+
+AC_marginal <- glm(Count2 ~ A + C + A:C, family = poisson, data = AC)
+round(exp(predict(AC_marginal, data.frame(AC))), 2)
+round(exp(coef(AC_marginal)), 5)
+
+(1449*281)/(500*46)
+```
+
+
+```{r 7-1-7}
+Drugs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Substance.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Drugs %>% 
+  filter(row_number() %in% c(1, n()))
+
+Drugs <- Drugs %>% 
+  rename(A = "alcohol") %>% 
+  rename(C = "cigarettes") %>% 
+  rename(M = "marijuana")
+
+#A <- Drugs$alcohol
+#C <- Drugs$cigarettes
+#M <- Drugs$marijuana
+
+
+fit <- glm(count ~ A + C + M + A:C + A:M + C:M, family = poisson, data = Drugs)
+summary(fit)
+```
+
+## 7.2 Statistical Inference for Loglinear Models
+
+### 7.2.1 Chi-Squared Goodness-of-Fit Tests
+
+```{r table7-4}
+# p-value for the (AC, AM, CM) model
+
+AC_AM <- glm(count ~ A + C + M + A:C + A:M, family = poisson, data = Drugs)
+AC_CM <- glm(count ~ A + C + M + A:C + C:M, family = poisson, data = Drugs)
+AM_CM <- glm(count ~ A + C + M + A:M + C:M, family = poisson, data = Drugs)
+AC_AM_CM <- glm(count ~ A + C + M + A:C + A:M + C:M, family = poisson, data = Drugs)
+
+# function to convert to a p-value and return "< 0.0..." with a digit threshold 
+residualP <- function(x, digits = 2){
+  pValue <- 1 - pchisq(deviance(x), df.residual(x))
+  value <- format(round(pValue, digits), scientific = FALSE)
+  if(value == 0) {
+    paste0("< 0.", strrep("0", digits-1), "1")
+    } else {
+      value
+    }
+}
+
+`Table 7.4` <-  
+  bind_cols(Model = c("(AC, AM)", "(AC, CM)", "(AM, CM)", "(AC, AM, CM)"),
+            Deviance = c(deviance(AC_AM), deviance(AC_CM), deviance(AM_CM), deviance(AC_AM_CM)),
+            df = c(df.residual(AC_AM), df.residual(AC_CM), df.residual(AC_AM), df.residual(AC_AM_CM)),
+            `P-value` = c(residualP(AC_AM, 4), residualP(AC_CM, 4), residualP(AC_AM, 4), residualP(AC_AM_CM))) %>% 
+  mutate(Deviance = round(Deviance, 1))
+              
+
+kable(`Table 7.4`)
+```
+
+### 7.2.2 Cell Standardized Residuals for Loglinear Models {#x7.2.2}
+
+```{r}
+fit <- glm(count ~ A + C + M + A:C + A:M + C:M, family = poisson, data = Drugs)
+fit2 <- glm(count ~ A + C + M + A:M + C:M, family = poisson, data = Drugs)
+deviance(fit)
+deviance(fit2)
+
+res <- round(rstandard(fit, type = "pearson"), 3)
+res2 <- round(rstandard(fit2, type = "pearson"), 3)
+
+tibble(Alcohol = Drugs$A, Cigarettes = Drugs$C, Marijuana = Drugs$M, 
+           Count = Drugs$count, 
+           "Fitted from fit" = fitted(fit), 
+           "Std. Resid. from fit" = rstandard(fit, type = "pearson"),
+           "Fitted from fi2" = fitted(fit2), 
+           "Std. Resid. from fit2" = rstandard(fit2, type = "pearson")) %>% 
+  mutate(across(contains("fit"), round, 3))
+```
+
+
+### 7.2.3 Significance Tests about Conditional Associations
+
+```{r}
+library(car)
+Anova(fit)
+```
+
+
+### 7.2.4 Confidence Intervals for Conditional Odds Ratios
+
+```{r}
+fit <- glm(count ~ A + C + M + A:C + A:M + C:M, family = poisson, data = Drugs)
+summary(fit)
+
+exp(confint(fit))
+```
+
+> Caution: Notice the LCL is in scientific notation and UCL is not.
+
+### 7.2.5 Bayesian Fitting of Loglinear Models
+
+```{r}
+#  library(MCMCpack)
+
+fitBayes <- MCMCpack::MCMCpoisson(count ~ A + C + M + A:C + A:M + C:M, 
+                                  family = poisson, data = Drugs)
+summary(fitBayes)
+
+# posterior prob. that AM log odds ratio < 0 
+# (parameter 6 in model is AM log odds ratio)
+mean(fitBayes[, 6] < 0)
+```
+
+### 7.2.6 Loglinear Models for Higher-Dimensional Contingency Tables
+
+
+### 7.2.7 Example: Automobile Accidents and Seat Belts
+
+### 7.2.8 Interpreting Three-Factor Interaction Terms
+
+```{r}
+Accidents <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Accidents2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Accidents %>% 
+  filter(row_number() %in% c(1, n())) 
+
+Accidents <- 
+  Accidents %>% 
+  rename("G" = gender, "L" = location, "S" = seatbelt, "I" = injury)
+
+# G*I = G + I + G:I
+fit <- glm(count ~ G*L*S + G*I + L*I + S*I, family = poisson, data = Accidents)
+summary(fit)
+```
+
+### 7.2.9 Statistical Versus Practical Significance: Dissimilarity Index
+
+$$D = \sum |n_i - \hat\mu_i|/2n = \sum |p_i - \hat\pi_i|/2.$$
+
+```{r}
+fit <- glm(count ~ G*L*S + G*I + L*I + S*I, family = poisson, data = Accidents)
+# dissimilarity index for loglinear model (GLS, GI, LI, SI)
+
+DI <- sum(abs(Accidents$count - fitted(fit)))/(2*sum(Accidents$count))
+round(DI, 5)
+
+fit2 <- glm(count ~ G*L + G*S + G*I + L*S + L*I + S*I, family = poisson, 
+                   data = Accidents)
+# dissimilarity index for loglinear model (GLS, GI, LI, SI)
+DI2 <- sum(abs(Accidents$count - fitted(fit2)))/(2*sum(Accidents$count))
+round(DI2, 5)
+```
+
+## 7.3 The Loglinear - Logistic Model Connection
+
+### 7.3.1 Using Logistic Models to Interpret Loglinear Models
+
+### 7.3.2 Example: Auto Accident Data Revisited
+
+\begin{equation} 
+  \mathrm{logit}[P(I=1)]=\alpha + \beta_g^G + \beta_l^L + \beta_s^S.
+  (\#eq:eq72)
+\end{equation} 
+
+```{r}
+Injury <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Injury_binom.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+# 8 lines in data file, one for each binomial on injury given (G, L, S)
+Injury %>% 
+  filter(row_number() %in% c(1, 2, n())) 
+
+Injury <- Injury %>% 
+  rename("G" = gender,
+         "L" = location,
+         "S" = seatbelt)
+
+fit2 <- glm(yes/(no + yes) ~ G + L + S, family = binomial, weights = no+yes, 
+            data = Injury)
+
+summary(fit2)
+```
+
+### 7.3.3 Condition for Equivalent Loglinear and Logistic Models
+
+### 7.3.4 Loglinear/Logistic Model Selection Issues
+
+## 7.4 Independence Graphs and Collapsibility
+
+### 7.4.1 Independence Graphs
+
+```{r}
+
+library(igraph)
+# pairs of vertices to connect 
+g <- graph(c("W","X",  "Y","Z",  "Y","W",  "Z","W"), directed = FALSE)
+
+LO <- layout_nicely(g) # original layout
+angle <- 2*pi * 7.495/12  # amount of clock face to rotate
+RotMat <- matrix(c(cos(angle),sin(angle),-sin(angle), cos(angle)), ncol=2)
+LO2 <- LO %*% RotMat
+
+plot(g, vertex.shape = "none", layout = LO2)
+```
+
+```{r, eval=FALSE}
+# Manually draw the plot
+tibble(x = c(0, 1, 2, 2, 1), 
+     y = c(0, 0, 1, -1, 0), 
+     name = c("X", "W", "Y", "Z", "W") ) %>% 
+ggplot(aes(x = x, y = y)) +
+geom_path() +
+geom_point(size = 8, color = "white") +
+theme_void() +
+geom_text(aes(label=name), hjust= .5, vjust= .4)
+```
+
+```{r, fig.height=1.5}
+tibble(x = c(0, 1, 2, 3), 
+       y = c(0, 0, 0, 0), 
+       name = c("W", "X", "Y", "Z") ) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_path() +
+  geom_point(size = 8, color = "white") +
+  theme_void() +
+  geom_text(aes(label=name), hjust= .5, vjust= .4)
+```
+
+### 7.4.2 Collapsibility Conditions for Contingency Tables
+
+```{r, fig.height=1.5}
+
+tibble(x = c(0, 1, 2), 
+       y = c(0, 0, 0), 
+       name = c("A", "M", "C") ) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_path() +
+  geom_point(size = 8, color = "white") +
+  theme_void() +
+  geom_text(aes(label=name), hjust= .5, vjust= .4)
+```
+
+```{r fig.height=1.5}
+tibble(x = c(0, 1, 2), 
+       y = c(0, 0, 0), 
+       name = c("A", "B", "C") ) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_path() +
+  geom_point(size = 8, color = "white") +
+  theme_void() +
+  geom_text(aes(label=name), hjust= .5, vjust= .4)
+```
+
+### 7.4.3 Example: Loglinear Model Building for Student Substance Use
+
+```{r}
+Drugs2 <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Substance2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+library(dplyr)
+
+`Table 7.5` <-  bind_cols(`Alcohol Use` = c("Yes", "", "No", ""),
+  `Cigarette Use` = rep(c("Yes", "No"),2),
+  matrix(Drugs2$count, ncol = 8,byrow = T,
+         dimnames = list(NULL,
+         c("Y_F_W", "N_F_W", "Y_M_W", "N_M_W", # Yes/No Female/Male whites
+           "Y_F_O", "N_F_O", "Y_M_O", "N_M_O"))))  # whites
+
+#knitr::kable(`Table 7.5`)
+
+
+library(flextable)
+
+my_header <- data.frame(
+  col_keys= colnames(`Table 7.5`),
+  line1 = c("Alcohol Use", "Cigarette Use", rep("Marijuna Use", 8)),
+  line2 = c("Alcohol Use", "Cigarette Use", rep("White", 4), rep("Other", 4)),
+  line3 = c("Alcohol Use", "Cigarette Use", rep(c(rep("Female", 2), rep("Male", 2)),2)),
+  line4 = c("Alcohol Use", "Cigarette Use", rep(c("Yes", "No"), 4))
+  )
+
+flextable(`Table 7.5`) %>% 
+  set_header_df(
+    mapping = my_header,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  align(align = "center", part = "all")
+
+```
+
+```{r}
+
+Drugs2 <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Substance2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+#A <- Drugs$alcohol
+#C <- Drugs$cigarettes
+#M <- Drugs$marijuana
+
+
+fit1 <- glm(count ~ A + C + M + R + G + G:R, family = poisson, data = Drugs2)
+fit2 <- glm(count ~ (A + C + M + R + G)^2, family = poisson, data = Drugs2)
+fit3 <- glm(count ~ (A + C + M + R + G)^3, family = poisson, data = Drugs2)
+fit4 <- glm(count ~ A + C + M + R + G + A:C + A:M + C:G + C:M + A:G + A:R + G:M + G:R + M:R, family = poisson, data = Drugs2)
+fit5 <- glm(count ~ A + C + M + R + G + A:C + A:M +       C:M + A:G + A:R + G:M + G:R + M:R, family = poisson, data = Drugs2)
+fit6 <- glm(count ~ A + C + M + R + G + A:C + A:M +       C:M + A:G + A:R + G:M + G:R, family = poisson, data = Drugs2)
+# summary(fit1)
+# summary(fit2)
+# summary(fit3)
+# summary(fit4)
+# summary(fit5)
+# summary(fit6)
+
+`Table 7.9` <- tibble(Model = c("1. Mutual independence + GR", 
+                                "2. Homogeneous association", 
+                                "3. All three-factor terms",
+                                "4. AC, AM, CG, CM, AG, AR, GM, GR, MR",
+                                "5. AC, AM,     CM, AG, AR, GM, GR, MR",
+                                "6. AC, AM,     CM, AG, AR, GM, GR"),
+                      Deviance = c(deviance(fit1), deviance(fit2), 
+                                   deviance(fit3), deviance(fit4),
+                                   deviance(fit5), deviance(fit6)),
+                      df = c(df.residual(fit1), df.residual(fit2), 
+                             df.residual(fit3), df.residual(fit4),
+                             df.residual(fit5), df.residual(fit6))) %>% 
+  mutate(Deviance = round(Deviance, 2))
+
+`Table 7.9`
+```
+
+### 7.4.4 Collapsibility and Logistic Models
+
+## 7.5 Modeling Ordinal Associations in Contingency Tables
+
+```{r}
+Teenagers <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Teenagers.dat",
+                        header = TRUE, stringsAsFactors = TRUE) %>% 
+  mutate(`Premarital Sex` = recode_factor(sex, "1" = "Always wrong", 
+                                   "2" = "Almost always wrong",
+                                   "3" = "Wrong only sometimes",
+                                   "4" = "Not wrong at all")) %>% 
+  mutate(`Teenage Birth Control` = recode_factor(birth, "1" = "Strongly Disagree", 
+                                          "2" = "Disagree",
+                                          "3" = "Agree",
+                                          "4" = "Strongly Agree"))
+
+fit <- glm(count ~ factor(sex) + factor(birth), family=poisson, 
+           data = Teenagers)
+#summary(fit)  # shows Residual deviance: 127.65  on  9  degrees of freedom
+#fitted(fit)
+
+fitLinear <- glm(count ~ factor(sex) + factor(birth) + sex:birth, family=poisson, 
+           data = Teenagers)
+# summary(fitLinear)  # Residual deviance:  11.534  on  8  degrees of freedom
+#fitted(fitLinear)
+# raw data 
+# xtabs(Teenagers$count ~ Teenagers$sex + Teenagers$birth)
+
+with(Teenagers, xtabs(count ~ `Premarital Sex` + `Teenage Birth Control`))
+
+TeenagersPlus <- bind_cols(Teenagers, independence = round(fitted(fit), 1), 
+                           linear = round(fitted(fitLinear), 1))
+
+with(TeenagersPlus, xtabs(independence ~ `Premarital Sex` + `Teenage Birth Control`))
+
+with(TeenagersPlus, xtabs(linear ~ `Premarital Sex` + `Teenage Birth Control`))
+
+```
+
+### 7.5.1 Linear-by-Linear Association Model
+
+$$\mathrm{log}\mu_{ij}= \lambda + \lambda_i^X + \lambda_j^Y + \beta\upsilon_i\nu_j.$$
+\begin{equation} 
+  \frac{\mu_{ab}\mu_{cd}}{\mu_{ad}\mu_{cg}} = \mathrm{exp}[\beta(\upsilon_c - \upsilon_a)(\nu_d - \nu_b)] 
+  (\#eq:eq73)
+\end{equation} 
+
+### 7.5.2 Example: Linear-by-Linear Association for Sex Opinions
+
+```{r}
+Teenagers <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Teenagers.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+Teenagers %>% 
+  filter(row_number() %in% c(1, 2, n())) 
+
+# quantitative sex-by birth interaction term
+fit <- glm(count ~ factor(sex) + factor(birth) + sex:birth, family=poisson, 
+           data = Teenagers)
+summary(fit)
+
+# interaction is likelihood ratio test for L x L association term
+car::Anova(fit)
+```
+
+$$\mathrm{exp}[\beta(\upsilon_4 - \upsilon_1)(\nu_4 - \nu_1)] = \mathrm{exp}[0.286(4-1)(4-1) = 13.1$$
+### 7.5.3 Ordinal Significance Tests of Independence
+
+## 7.6 Loglinear Modeling of Count Response Variables *
+
+### 7.6.1 Count Regressoin Modeling of Rate Data
+
+$$\mathrm{log}(\mu/t)= \alpha + \beta_1 x_1 + \cdots + \beta_p x_p.$$
+
+$$\mathrm{log} \mu - \mathrm{log} t = \alpha + \beta_1 x_1 + \cdots + \beta_p x_p.$$
+
+$$\mu = t\ \mathrm{exp}(\alpha + \beta_1 x_1 + \cdots + \beta_p x_p).$$
+
+### 7.6.2 Example: Death Rates for Lung Cancer Patients
+
+```{r}
+Cancer <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Cancer.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+cancerCountWide <- Cancer %>% 
+  select(-risktime) %>% 
+  pivot_wider(id = time, names_from = c(histology, stage), 
+              values_from=count) %>% 
+  mutate(time = case_when(time == 1 ~ "0-2",
+                          time == 2 ~ "2-4",
+                          time == 3 ~ "4-6",
+                          time == 4 ~ "6-8",
+                          time == 5 ~ "8-10",
+                          time == 6 ~ "10-12",
+                          time == 7 ~ "12+",)) %>% 
+  mutate(`histo` = " ") %>% # blank column for column headings
+  select(time, histo, everything())
+
+cancerRiskTimeWide <- Cancer %>% 
+  select(-count) %>% 
+  mutate(risktime = paste0("(", risktime, ")")) %>% 
+  pivot_wider(id = time, names_from = c(histology, stage), 
+              values_from=risktime) %>% 
+  mutate(time = case_when(time == 1 ~ "0-2",
+                          time == 2 ~ "2-4",
+                          time == 3 ~ "4-6",
+                          time == 4 ~ "6-8",
+                          time == 5 ~ "8-10",
+                          time == 6 ~ "10-12",
+                          time == 7 ~ "12+",)) %>% 
+  mutate(`histo` = " ") %>% 
+  select(time, histo, everything())
+
+# function to interleave two matrices
+# https://stackoverflow.com/questions/19781723/interleave-rows-of-matrix-stored-in-a-list-in-r
+# https://gist.github.com/mrdwab/7313857
+Interleave <- function(myList, append.source = TRUE, sep = ": ", drop = FALSE) {
+  sources <- myList
+  sources[sapply(sources, is.null)] <- NULL
+  sources <- lapply(sources, function(x) {
+    if (is.matrix(x) || is.data.frame(x)) {
+      x
+    } else {
+      t(x)
+    }
+  })
+  nrows <- sapply(sources, nrow)
+  mrows <- max(nrows)
+  if (any(nrows != mrows & nrows != 1)) {
+    stop("Arguments have differening numbers of rows.")
+  }
+  sources <- lapply(sources, function(x) {
+    if (nrow(x) == 1) {
+      x[rep(1, mrows), , drop = drop]
+    } else {
+      x
+    }
+  })
+  tmp <- do.call("rbind", sources)
+  nsources <- length(sources)
+  indexes <- outer((0:(nsources - 1)) * mrows, 1:mrows, "+")
+  retval <- tmp[indexes, , drop = drop]
+  if (append.source && !is.null(names(sources))) {
+    if (!is.null(row.names(tmp))) {
+      row.names(retval) <- paste(format(row.names(retval)),
+        format(names(sources)),
+        sep = sep
+      )
+    } else {
+      row.names(retval) <- rep(names(sources), mrows)
+    }
+  }
+  retval
+}
+
+# objects to interleave
+l <- list(a=as.matrix(cancerCountWide),b=as.matrix(cancerRiskTimeWide))
+
+# interleave counts and risk time
+bigMatrix <- Interleave(l)
+
+# add columns for titles
+biggerMatrix <- data.frame(cbind(bigMatrix[,1], bigMatrix[,2:11]))
+names(biggerMatrix) <- names(cancerCountWide)
+
+my_header <- data.frame(
+  col_keys = c("time", "histo", "blank1", 
+               "1_1", "2_1", "3_1", "blank2", 
+               "1_2", "2_2", "3_2", "blank3", 
+               "1_3", "2_3","3_3"),
+  line2 = c("Follow-up", "Histology", "", rep("I", 3), "", rep("II", 3), "", 
+            rep("III", 3)),
+  line3 = c("Follow-up", "Disease Stage", rep(c("", "1", "2", "3"), 3))
+)
+
+library(officer)
+big_border = fp_border(color="black", width = 2)
+
+library(flextable)
+flextable(biggerMatrix, col_keys = my_header$col_keys) %>% 
+  set_header_df(
+    mapping = my_header,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "header") %>% 
+  merge_v(part = "body") %>%
+  align(align = "center", part = "all") %>% 
+  autofit() %>% 
+  empty_blanks() %>% 
+  hline_top(part="header", border = big_border) %>% 
+  hline_bottom(part="body", border = big_border) %>% 
+  fix_border_issues()
+```
+
+$$\mathrm{log}(\mu_{ijk}/t_{ijk}) = \beta_0 + \beta_i^H + \beta_j^S + \beta_k^T,$$
+
+```{r}
+Cancer <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Cancer.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Cancer %>% 
+  filter(row_number() %in% c(1, n())) 
+
+Cancer <- Cancer %>% 
+  mutate("logrisktime" = log(Cancer$risktime))
+
+# showing 6 time effects
+fit <- glm(count ~ factor(histology) + factor(stage) + factor(time), 
+           family = poisson, offset = logrisktime, data = Cancer)
+summary(fit)
+
+# likelihood-ratio test of effects, adjusting for the others
+car::Anova(fit)
+```
+
+### 7.6.3 Negativee Binomial Regression Models
+
+$$E(Y) = \mu,\ \ \mathrm{var}(Y) = \mu + D\mu^2.$$
+
+### 7.6.4 Example: Female Horseshoe Crab Satelites Revisited
+
+```{r}
+Crabs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Crabs.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Crabs %>% 
+  filter(row_number() %in% c(1, n())) 
+
+fit.pois <- glm(sat ~ width, family = poisson, data = Crabs)
+summary(fit.pois)
+
+fit.negbin <- MASS::glm.nb(sat ~ width, data = Crabs)
+summary(fit.negbin)
+
+```

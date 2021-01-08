@@ -1,0 +1,204 @@
+--- 
+title: "Notes for Agresti's Introduction to Categorical Data Analysis 3rd Edition"
+author: "Raymond R. Balise and Wayne F. DeFreitas"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook: 
+    css: "style.css"
+    config: 
+      toc:
+        collapse: false
+    number_sections: false
+
+description: "Notes for Agresti's Introduction to Categorical Data Analysis"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = NA, echo = TRUE)
+#knitr::opts_chunk$set(collapse = TRUE)
+
+library(conflicted)
+suppressMessages(conflict_prefer("select", "dplyr"))
+suppressMessages(conflict_prefer("filter", "dplyr"))
+suppressPackageStartupMessages(library(tidyverse))
+
+knitr::opts_chunk$set(class.output = "custom-output")
+```
+
+# 1 Introduction{#intro}
+
+## 1.1 Categorical Response Data
+
+### 1.1.1 Response Variables and Explanatory Variables
+
+### 1.1.2 Binary-Nominal-Ordinal Scale Distinction
+
+### 1.1.3 Organization of this Book 
+
+## 1.2 Probability Distributions for Categorical Data
+
+### 1.2.1 Binomial Distribution {#binomial}
+
+\begin{equation} 
+  P(y) = \frac{n!}{y(n-y)!}\pi^y(1-\pi)^{n-y},\ y = 0, 1, 2, ..., n.
+  (\#eq:binom)
+\end{equation} 
+
+$$P(0) = \frac{10!}{0!10!}(0.20)^0(0.80)^{10} = (0.80)^{10} = 0.107$$
+$$P(1) = \frac{10!}{1!9!}(0.20)^1(0.80)^{9} = 10(0.20)(0.80)^{9} = 0.268$$
+```{r}
+library(kableExtra)
+bino <- function(pi, n, y) {
+  factorial(n) / (factorial(y) * factorial(n - y)) * pi ^ y * (1 - pi) ^ (n - y)
+}
+y <-0:10
+
+
+table1_1 <- data.frame(y, x2 = bino(.2, 10, y), x3 = bino(.5, 10, y), x4 = bino(.8, 10, y))
+
+kable(table1_1, 
+      digits = 3,
+      align='c',
+      col.names = c("$y$", 
+                    "$P(y)$ when $\\pi = 0.20$ $(\\mu = 2.0, \\sigma = 1.26)$", 
+                    "$P(y)$ when $\\pi = 0.50$ $(\\mu = 5.0, \\sigma = 1.58)$", 
+                    "$P(y)$ when $\\pi = 0.80$ $(\\mu = 8.0, \\sigma = 1.26)$"))
+```
+
+$$E(Y)=\mu=n\pi,\ \sigma = \sqrt{n\pi(1-\pi)}$$
+### 1.2.2 Multinomial Distribution {#x1.2.2}
+
+## 1.3 Statistical Inference for a Proportion
+
+### 1.3.1 Likelihood Function and Maximum Likelihood Estimation
+
+### 1.3.2 Significance Test about a Binomial Parameter
+
+$$E(\hat{\pi})=\pi,\ \sigma(\hat{\pi}) = \sqrt{\frac{\pi(1-\pi)}{n}}$$
+
+$$z = \frac{\hat{\pi}-\pi_0}{SE_0} = \frac{\hat{\pi}-\pi_0}{ \sqrt{\frac{\pi_0(1-\pi_0)}{n}}}$$
+
+### 1.3.3 Example: Surveyed Opinions About Legalized Abortion
+
+```{r}
+round(837/1810, 4)
+```
+$$z =  \frac{\hat{\pi}-\pi_0}{ \sqrt{\frac{\pi_0(1-\pi_0)}{n}}} ==  \frac{.4624-.5}{ \sqrt{\frac{0.50(0.50)}{1810}}} = -3.2$$
+```{r}
+z <- round((.4624-.5)/sqrt(0.50*0.50/1810), 2)
+round(2 * pnorm(z, lower.tail=TRUE), 4)
+```
+
+### 1.3.4 Confidence Intervals for a Binomial Parameter
+Estimated standard error of $\hat{\pi}$ equals $SE = \sqrt{\hat{\pi}(1-\hat{\pi})/n}$
+
+$$\hat{\pi}\pm z_{\alpha/2}(SE),\ SE = \sqrt{\hat{\pi}(1-\hat{\pi})/n}\ \ \ \ \ \ \ \ \ (1.3)$$
+
+### 1.3.5 Better Confidence Intervals for a Binomial Proportion
+
+$$\frac{| \hat{\pi}-\pi_0|}{ \sqrt{\pi_0(1-\pi_0)/n}} = 1.96$$ for $\pi_0$
+
+## 1.4 Statistical Inference for Discrete Data
+
+### 1.4.1 Wald, Likelihood-Ratio, and Score Tests {#x1.4.1}
+
+$$z = (\hat{\beta}-\beta)/SE$$
+The two-tailed standard normal probability of 0.05 that falls below -1.96 and above 1.96 equals the right-tail chi-squared probability above $(1.96)^2 = 3.84$ when df = 1.
+
+```{r}
+2 * pnorm(-1.96)  # 2 * standard normal cumulative prob below -1.96
+
+pchisq(1.96^2, 1)  # chi-square cumulative probability
+
+1 - pchisq(1.96^2, 1)  # right tailed prob above 1.96 * 1.96 when df = 1
+pchisq(1.96^2, 1, lower.tail = FALSE)  # same
+
+```
+
+
+
+$$2\ \mathrm{log}(\ell_1 / \ell_0) = \mathrm{oberved/null}$$ 
+
+### 1.4.2 Example Wald, Score and Likelihood-Ratio Binomial Tests
+
+$$z = (\hat{\pi} - \pi_0)/SE_0 = (0.90 - 0.50)/0.158 = 2.53$$
+
+$$\ell(\pi) = \frac{10!}{9!1!}\pi^9(1-\pi)^1 = 10\pi^9(1-\pi)$$
+
+$$2 log(\ell_1/\ell_0)= 2\ log (0.3874/0.00977) = 7.36.$$
+
+### 1.4.3 Small-Sample Binomial Inference and the Mid P-Value {#ssbi}
+
+## 1.5 Bayesian Inference for Proportions
+
+### 1.5.1 The Bayesian Approach to Statistical Inference
+
+$$
+\ \ \ \ \ \ \\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ell(\beta)\ \ \ prior \\\ 
+g(\beta|y) \mathrm{\ is\ proportional\ to}\ p(y|\beta)f(\beta)
+$$
+
+### 1.5.2 Bayesian Binomial Inference: Beta Prior Distributions
+
+$$
+f(\pi) \propto \pi^{\alpha -1}(1-\pi)^{(\beta-1)},\ 0 \le \pi \le 1
+$$
+
+### 1.5.3 Example: Opinions about Legalized Abortion, Revisited
+
+### 1.5.4 Other Prior Distributions
+
+## 1.6 Using `R` software for Statistical Inference about Proportions
+
+### 1.6.1 Reading Data Files and Installing Packages
+
+```{r, message=FALSE}
+Clinical <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Clinical.dat", 
+                       header = TRUE)
+Clinical
+```
+
+###  1.6.2 Using `R` for Statistical Inference about Proportions
+
+```{r}
+library(binom)
+prop.test(837, 1810, p = 0.50, alternative = "two.sided", correct = FALSE)
+prop.test(837, 1810, p = 0.50, alternative = "less", correct = FALSE)
+```
+
+```{r}
+prop.test(sum(Clinical$response), n = 10, conf.level = 0.95, correct = FALSE)
+with(Clinical, prop.test(sum(response), n = 10, conf.level = 0.95, correct = FALSE))
+```
+
+```{r}
+binom.confint(9, 10, conf.level = 0.95, 
+              method = c("asymptotic", "wilson","agresti-coull"))
+```
+
+```{r}
+binom.test(9, 10, 0.5, alternative = "two.sided")
+binom.test(9, 10, 0.5, alternative = "greater")
+```
+
+```{r, message=FALSE}
+library(exactci)
+exactci::binom.exact(9, 10, 0.50, alternative = "greater", midp = TRUE)
+
+library(PropCIs)
+midPci(9, 10, 0.95)
+```
+
+```{r}
+qbeta(c(0.025, 0.975), 837.5, 973.5)
+
+pbeta(0.50, 837.5, 973.5)
+
+1 - pbeta(0.50, 837.5, 973.5)
+```
+
+### 1.6.3 Summary: Choosing an Inference Method
+
+## Exercises

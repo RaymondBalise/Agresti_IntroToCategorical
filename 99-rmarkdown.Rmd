@@ -1,0 +1,177 @@
+---
+title: "html"
+author: "Raymond R Balise"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    df_print: kable
+---
+
+
+# 99  R Markdown {#rmarkdown}
+
+<style>
+  .col2 {
+    columns: 2 150px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 150px; /* chrome, safari */
+    -moz-columns: 2 150px;    /* firefox */
+  }
+  .col3 {
+    columns: 3 100px;
+    -webkit-columns: 3 100px;
+    -moz-columns: 3 100px;
+  }
+</style>
+
+
+
+
+
+### Formatting
+
+Formatting  | Code
+| :---     | :--- |
+| bold Greek symbol | \\boldsymbol{\epsilon}  |
+| typewriter | \{\\tt blah\} |
+| slide font | \{\\sf blah\} |
+| bold    | \\mathbf{x} |
+| pain    | \\mathrm{Pr} |
+| cursive | \\mathcal{S} |
+| Blackboard bold    | \\mathbb{R} |
+
+### Symbols
+
+| Symbols | Code |
+:---     | :--- |
+| $\times$ | \\times |
+| $\stackrel{\text{def}}{=}$ | \\stackrel{\\text{def}}{=} |
+
+## Markdown highlighting
+| Formatting  | Code |
+| :---     | :--- |
+| **bold** | \*\*bold\*\* |
+| __bold__ | \_\_bold\_\_ |
+| *italic* | \*italic\*  |
+| _italic_ | \_italic\_  |
+ 
+## Text coloring
+```{r, include=TRUE}
+colorText = function(x, color){
+  if(knitr::is_latex_output())
+    paste("\\textcolor{",color,"}{",x,"}",sep="")
+  else if(knitr::is_html_output())
+    paste("<font color='",color,"'>",x,"</font>",sep="")
+  else
+    x
+}
+
+red = function(x){
+  if(knitr::is_latex_output())
+    paste("\\textcolor{",'red',"}{",x,"}",sep="")
+  else if(knitr::is_html_output())
+    paste("<font color='red'>",x,"</font>",sep="")
+  else
+    x
+}
+```
+
+## Equations 
+The names of equations can not include . or _ but it can include -
+
+```{}
+\begin{equation} 
+  P(Y=1) = 
+  (\#eq:eq71)
+\end{equation} 
+```
+
+\\@ref(eq:eq71)
+
+## Section references {#x99.4}
+Section [99.4](#x99.4)  `Section [99.4](#x99.4)`
+
+## Footnotes
+^[A footnote]  `^[A footnote]`
+
+## Displaying Formula 
+
+### Notation
+
+Based on: https://www.calvin.edu/~rpruim/courses/s341/S17/from-class/MathinRmd.html
+
+| Math     | Code |
+| :---     | :--- |
+| $x = y$                                                     | `$x = y$                         ` |
+| $x < y$                                                     | `$x < y$                         ` |
+| $x > y$                                                     | `$x > y$                         ` |
+| $x \le y$                                                   | `$x \le y$                       ` |
+| $x \ge y$                                                   | `$x \ge y$                       ` |
+| $x^{n}$                                                     | `$x^{n}$                         ` |
+| $x_{n}$                                                     | `$x_{n}$                         ` |
+| $\overline{x}$                                              | `$\overline{x}$                  ` |
+| $\hat{x}$                                                   | `$\hat{x}$                       ` |
+| $\tilde{x}$                                                 | `$\tilde{x}$                     ` |
+| $\frac{a}{b}$                                               | `$\frac{a}{b}$                   ` |
+| $\displaystyle \frac{a}{b}$                                 | `$\displaystyle \frac{a}{b}$     ` |
+| $\binom{n}{k}$                                              | `$\binom{n}{k}$                  ` |
+| $x_{1} + x_{2} + \cdots + x_{n}$                            | `$x_{1} + x_{2} + \cdots + x_{n}$` |
+| $x_{1}, x_{2}, \dots, x_{n}$                                | `$x_{1}, x_{2}, \dots, x_{n}$    ` |
+| $\mathbf{x} = \langle x_{1}, x_{2}, \dots, x_{n}\rangle$    | `$\mathbf{x} = \langle x_{1}, x_{2}, \dots, x_{n}\rangle$` |
+| $x \in A$                                                   | `$x \in A$                                        ` |
+| $|A|$                                                       | `$|A|$                                            ` |
+| $x \in A$                                                   | `$x \in A$                                        ` |
+| $x \subset B$                                               | `$x \subset B$                                    ` |
+| $x \subseteq B$                                             | `$x \subseteq B$                                  ` |
+| $A \cup B$                                                  | `$A \cup B$                                       ` |
+| $A \cap B$                                                  | `$A \cap B$                                       ` |
+| $X \sim {\sf Binom}(n, \pi)$                                | `X \sim {\sf Binom}(n, \pi)$                      ` |
+| $\mathrm{P}(X \le x) = {\tt pbinom}(x, n, \pi)$             | `$\mathrm{P}(X \le x) = {\tt pbinom}(x, n, \pi)$  ` |     
+| $P(A \mid B)$                                               | `$P(A \mid B)$                                    ` |
+| $\mathrm{P}(A \mid B)$                                      | `$\mathrm{P}(A \mid B)$                           ` |  
+| $\{1, 2, 3\}$                                               | `$\{1, 2, 3\}$                                    ` |
+| $\sin(x)$                                                   | `$\sin(x)$                                        ` |
+| $\log(x)$                                                   | `$\log(x)$                                        ` |
+| $\int_{a}^{b}$                                              | `$\int_{a}^{b}$                                   ` |
+| $\left(\int_{a}^{b} f(x) \; dx\right)$                      | `$\left(\int_{a}^{b} f(x) \; dx\right)$           ` |
+| $\left[\int_{-\infty}^{\infty} f(x) \; dx\right]$           | `$\left[\int_{\-infty}^{\infty} f(x) \; dx\right]$` |
+| $\left. F(x) \right|_{a}^{b}$                               | `$\left. F(x) \right|_{a}^{b}$                    ` |
+| $\sum_{x = a}^{b} f(x)$                                     | `$\sum_{x = a}^{b} f(x)$                          ` |
+| $\prod_{x = a}^{b} f(x)$                                    | `$\prod_{x = a}^{b} f(x)$                         ` |
+| $\lim_{x \to \infty} f(x)$                                  | `$\lim_{x \to \infty} f(x)$                       ` |
+| $\displaystyle \lim_{x \to \infty} f(x)$                    |	`$\displaystyle \lim_{x \to \infty} f(x)$`        ` |
+
+
+## Greek letters
+
+Based on: https://www.calvin.edu/~rpruim/courses/s341/S17/from-class/MathinRmd.html
+
+<div class="col2">
+
+| letters | code |                                                       
+|:-------|:---- |                                                       
+| $\alpha A$ | `$\alpha A$` |
+| $\beta B$ | `$\beta B$` |           
+| $\gamma \Gamma$ |  `$\gamma \Gamma$` |           
+| $\delta \Delta$ |  `$\delta \Delta$` |           
+| $\epsilon \varepsilon E$ |  `$\epsilon \varepsilon E$` |           
+| $\zeta Z \sigma$ |  `$\zeta Z \sigma` |           
+| $\eta H$ | `$\eta H$` |           
+| $\theta \vartheta \Theta$ | `$\theta \vartheta \Theta$` |           
+| $\iota I$ | `$\iota I$ ` |           
+| $\kappa K$ | `$\kappa K$ ` |           
+| $\lambda \Lambda$ | `$\lambda \Lambda$` |           
+| $\mu M$ |  `$\mu M$` |           
+| $\nu N$ |  `$\nu N$` |           
+| $\xi\Xi$ |  `$\xi\Xi$` |           
+| $o O$ |  `$o O$ (omicron)` |           
+| $\pi \Pi$ |  `$\pi \Pi$` |           
+| $\rho\varrho P$ | `$\rho\varrho P$` |           
+| $\sigma \Sigma$ | `\sigma \Sigma$` |           
+| $\tau T$ | `$\tau T$` |           
+| $\upsilon \Upsilon$ | `$\upsilon \Upsilon$` |           
+| $\phi \varphi \Phi$ | `$\phi \varphi \Phi$` |           
+| $\chi X$ | `$\chi X$` |           
+| $\psi \Psi$ | `$\psi \Psi$` |           
+| $\omega \Omega$ | `$\omega \Omega$` |           
+
+</div>

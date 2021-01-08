@@ -1,0 +1,314 @@
+# 10 Random Effects: Generalized Linear Mixed Models {#Random}
+
+
+## 10.1 Random Effects Modeling of Clustered Categorical Data
+
+### 10.1.1 The Generalized Linear Mixed Model (GLMM)
+
+\begin{equation} 
+  g(u_{it}) = u_i + \alpha + \beta_1 x_{it1}+ \dots + \beta_p x_{itp},\ i = 1, \dots, n,\ t = 1, \dots, T.
+  (\#eq:eq101)
+\end{equation} 
+
+### 10.1.2 A Logistic GLMM for Binary Matched Pairs
+
+\begin{equation} 
+  \mathrm{logit}[P(Y_{i1}= 1)] = u_i + \alpha + \beta,\ \ \mathrm{logit}[P(Y_{i2}= 1)] = u_i + \alpha
+  (\#eq:eq102)
+\end{equation} 
+
+### 10.1.3 Example: Environmental Opinions Revised
+
+
+```{r}
+Opinions <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Envir_opinions.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+# Make contingency table
+tab <- as.matrix(addmargins(xtabs(~y1 + y2, data = Opinions)))
+
+library(tibble)
+# Add label as the first column and variable names
+`Table 10.1` <- tibble(`Pay Higher Taxes` = c("Yes", "No", "Total"), 
+                      Yes = tab[,1], No = tab[,2], Total = tab[,3])
+
+
+library(flextable)
+my_header <- data.frame(
+  col_keys = colnames(`Table 10.1`),
+  line1 = c("Pay Higher Taxes", rep("Cut Living Standards", 2), "Total"),
+  line2 = colnames(`Table 10.1`)
+)
+
+flextable(`Table 10.1`, col_keys = my_header$col_keys) %>%
+  set_header_df(
+    mapping = my_header,
+    key = "col_keys"
+  ) %>% 
+  theme_booktabs() %>% 
+  autofit(part = "all") %>%    
+  align(align = "center", part = "all") %>% 
+  merge_h(part = "header") %>% 
+  merge_v(part = "header") %>% 
+  merge_h(part = "body") %>% 
+  merge_v(part = "body") %>%
+  align_nottext_col(align = "center") %>% 
+  set_caption(caption = "Opinions relating to the environment") 
+```
+
+```{r}
+Opinions <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Opinions.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Opinions %>% 
+  filter(row_number() %in% c(1, 2, n()-1, n())) 
+
+# library(lme4)
+# fit GLMM by adaptive Gaussian quadrature, 
+# with nAGQ quadrature points, as 10.1.5 explains 
+# (1|person) is random intercept for person
+fit <- lme4::glmer(y ~ (1|person) + question, family = binomial, nAGQ = 50, 
+                   data = Opinions)
+summary(fit)
+```
+
+### 10.1.4 Differing Effects in GLMMs and Marginal Models
+
+###  10.1.5 Model Fitting for GLMMs
+
+###  10.1.6 Inference for Model Parameters and Prediction
+
+## 10.2 Examples: Random Effects Models for Binary Data
+
+### 10.2.1 Small-Area Estimation of Binomial Probabilities
+
+\begin{equation} 
+  \mathrm{logit}[P(Y_{it} = 1)] = \mathrm{logit}(\pi_i) = u_i + \alpha,
+  (\#eq:eq103)
+\end{equation} 
+
+### 10.2.2 Example: Estimating Basketball Free Throw Success
+
+```{r}
+FreeThrow <- read.table("http://users.stat.ufl.edu/~aa/cat/data/FreeThrow.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+FreeThrow %>% 
+  filter(row_number() %in% c(1, n()))  
+
+library(lme4)
+
+# (1|player) = random intercepts for each player
+# nAGQ = number of points for adaptive Gaussian quadrature
+fit <- 
+  glmer(y/T ~ 1 + (1|player), family=binomial, weights = T, nAGQ= 100,
+              data = FreeThrow)
+summary(fit)
+
+fitted(fit)  # estimated prob's for 20 players using predicted random effects
+```
+
+```{r}
+season <-  c(0.80, 0.77, 0.63, 0.81, 0.84, 0.81, 0.83, 0.78, 0.57, 0.39, 
+             0.81, 0.82, 0.81, 0.61, 0.79, 0.74, 0.80, 0.67, 0.77, 0.65)
+
+`Table 10.2` <- bind_cols(Player = word(FreeThrow$player, 1, sep = fixed(".")), T_i = FreeThrow$T, 
+                          p_i = round(FreeThrow$y/ FreeThrow$T, 2), 
+                          hat_pi_i = round(fitted(fit), 2), pi_i = season) 
+
+
+library(flextable)
+flextable(`Table 10.2`) %>% 
+  theme_booktabs() %>% 
+  fix_border_issues()  %>%
+  set_caption(caption = "Estimates of probability of making a free throw, based on data from centers from week 1 of an NBA season.") %>% 
+    set_table_properties(width = .5, layout = "autofit") %>% 
+  flextable::compose(part = "header", j = "T_i",
+                     value = as_paragraph("T", as_sub("i"))) %>% 
+  flextable::compose(part = "header", j = "p_i", 
+                     value = as_paragraph("p", as_sub("i"))) %>% 
+  flextable::compose(part = "header", j = "hat_pi_i", 
+                     value = as_paragraph("\U1D70B\U0302", as_sub("i"))) %>% 
+  flextable::compose(part = "header", j = "pi_i", 
+                     value = as_paragraph("\U1D70B", as_sub("i"))) 
+
+# compose is also used by purrr (and igraph)
+# Unicode is a hat over the next character and U1D70B is pi
+```
+
+
+```{r}
+summary(glm(y/T ~ 1, family = binomial, weights = T, data = FreeThrow))
+```
+
+
+### 10.2.3 Example: Opinions about Legalizing Abortion Revised
+
+```{r}
+Abortion <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Abortion.dat",
+                        header = TRUE, stringsAsFactors = TRUE) %>% 
+  mutate(sit = factor(situation, levels = c(3,1,2)))
+
+Abortion %>% 
+  filter(row_number() %in% c(1:3, n()-2, n()-1, n()))  
+
+fit <- 
+  lme4::glmer(response ~ (1 | person) + sit + gender, family = binomial, 
+              nAGQ = 100, data = Abortion)
+summary(fit)
+```
+
+### 10.2.4 Item Response Models: The Rasch Model
+
+### 10.2.5 Choice of Marginal Model or Random Effects Model
+
+## 10.3 Extensions to Multinomial Responses and Multiple Random Effect Terms
+
+### 10.3.1 Example: Insomnia Study Revisited
+
+```{r}
+Insomnia <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Insomnia.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Insomnia %>% 
+  filter(row_number() %in% c(1, 2, n()-1, n()))  
+
+# response var. from clmm must be a factor
+fit <- 
+  ordinal::clmm(factor(response) ~ (1|case) + occasion + treat + occasion:treat,
+                nAGQ = 20, data = Insomnia)  
+summary(fit)
+```
+
+
+```{r}
+library(multgee)
+fit_multgee <- 
+  ordLORgee(response ~ occasion + treat + occasion:treat, id = case,
+                 LORstr = "independence", data = Insomnia)
+
+fit_ordinal <- 
+  ordinal::clmm(factor(response) ~ (1|case) + occasion + treat + occasion:treat,
+                nAGQ = 20, data = Insomnia)
+
+`Table 10.4` <- 
+  data.frame(Effect = c("Occasion", "Treatment", "Treatment x Occasion"),
+             
+             mm_coef = c(coef(fit_multgee)["occasion"],
+                         coef(fit_multgee)["treat"],
+                         coef(fit_multgee)["occasion:treat"]),
+             mm_se = c(coef(summary(fit_multgee))["occasion", "san.se"],
+                       coef(summary(fit_multgee))["treat", "san.se"],
+                       coef(summary(fit_multgee))["occasion:treat", "san.se"]),
+             # note the -1 because of the (weird negative) model specification
+             re_coef = c(coef(fit_ordinal)["occasion"],
+                         coef(fit_ordinal)["treat"],
+                         coef(fit_ordinal)["occasion:treat"]) * -1,
+             re_se = c(coef(summary(fit_ordinal))["occasion", "Std. Error"],
+                       coef(summary(fit_ordinal))["treat", "Std. Error"],
+                       coef(summary(fit_ordinal))["occasion:treat", 
+                                                  "Std. Error"])) %>%
+  mutate(across(where(is.numeric), round, 3)) %>% 
+  mutate(`Marginal Model GEE` = paste0(mm_coef, " (", mm_se, ")")) %>% 
+  mutate(`Random Effects Model (GLMM) ML` = paste0(re_coef, " (", re_se, ")")) %>% 
+  select(Effect, `Marginal Model GEE`, `Random Effects Model (GLMM) ML`)
+  
+library(flextable)
+flextable(`Table 10.4`) %>% 
+   set_caption(caption = "Results of fitting cumulative logit marginal model and random effects model to Table 9.2, with standard errors in parentheses.") %>% 
+  set_table_properties(width = .75, layout = "autofit") %>% 
+  align(align = "center", part = "all") 
+```
+
+
+### 10.3.2 Meta-Analysis: Bivariate Random Effects for Association Heterogeneity
+
+```{r}
+Ulcers <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Ulcers.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Ulcers %>% 
+  filter(row_number() %in% c(1, 2, n()-1, n()))  
+
+fit <- 
+  lme4::glmer(y/n ~ (1|study) + treat, family = binomial, weights = n, nAGQ = 50,
+              data = Ulcers)
+summary(fit)
+```
+
+\begin{equation} 
+  \mathrm{logit}[P(Y_{i1}= 1)] = u_i + \alpha + (\beta + v_1),\ \ \mathrm{logit}[P(Y_{i2}= 1)] = u_i + \alpha
+  (\#eq:eq104)
+\end{equation} 
+
+```{r}
+fit2 <-  
+  lme4::glmer(y/n ~ (1 + treat|study), family = binomial, weights = n, 
+              data = Ulcers)
+summary(fit2)
+```
+
+## 10.4 Multilevel (Hierarchical) Models
+
+### 10.4.1 Example: Two-Level Model for Student Performance
+
+### 10.4.2 Example: Smoking Prevention and Cessation Study
+
+```{r}
+Smoking <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Smoking.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+`Table 10.6` <- Smoking %>% 
+  filter(row_number() %in% c(1, 2, n()))  %>% 
+  select(-y)
+
+library(flextable)
+flextable(`Table 10.6`) %>% 
+   set_caption(caption = "Part of smoking prevention and cessation data file.") %>% 
+  set_table_properties(width = .75, layout = "autofit") %>% 
+  align(align = "center", part = "all") 
+```
+
+```{r}
+Smoking <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Smoking.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Smoking %>% 
+  filter(row_number() %in% c(1, n()))  
+
+fit <-  
+  lme4::glmer(y ~ (1|class) + (1|school) + PTHK + SC + TV, family = binomial, 
+              data = Smoking)
+summary(fit)
+```
+
+```{r}
+fit.glm <- glm(y ~ PTHK + SC + TV, family = binomial, data = Smoking)
+summary(fit.glm)
+```
+
+## 10.5 Latent Class Models *
+
+### 10.5.1 Independence Given a Latent Categorical Variable
+
+### 10.5.2 Example: Latent Class Model for Rater Agreement
+
+```{r eval = FALSE}
+Carcinoma <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Carcinoma.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Carcinoma <- -Carcinoma + 2
+
+Carcinoma %>% 
+  filter(row_number() %in% c(1, n()))  
+
+library(poLCA)
+poLCA(cbind(A, B, C, D, E, F, G) ~ 1, nclass = 1, data = Carcinoma)
+
+poLCA(cbind(A, B, C, D, E, F, G) ~ 1, nclass = 2, nrep = 9, data = Carcinoma)
+
+poLCA(cbind(A, B, C, D, E, F, G) ~ 1, nclass = 3, nrep = 9, data = Carcinoma)
+
+poLCA(cbind(A, B, C, D, E, F, G) ~ 1, nclass = 4, nrep = 9, data = Carcinoma)
+```
+
+## Exercises

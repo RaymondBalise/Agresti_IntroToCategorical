@@ -1,0 +1,391 @@
+# 5 Building and Applying Logistic Regression Models
+
+## 5.1 Strategies in Model Selection
+
+### 5.1.1 How Many Explanatory Variables Can the Model Handle?
+
+### 5.1.2 Example: Horseshoe Crab Satellites Revisited
+$$\mathrm{logit}[P(Y=1)] = \alpha + \beta_1 weight + \beta_2 width + \beta_3 c_2 + \beta_4 c_3 + \beta_5 c_4 + \beta_6 s_2 + \beta_7 s_3$$
+
+```{r 5-1-2}
+Crabs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Crabs.dat",
+  header = TRUE, stringsAsFactors = TRUE
+)
+
+fit <- glm(y ~ weight + width + factor(color) + factor(spine),
+  family = binomial, data = Crabs
+)
+
+summary(fit)
+
+pValue <- 1 - pchisq(225.76 - 185.20, 172 - 165)
+format(round(pValue, 8), scientific = FALSE)
+
+library(car)
+Anova(fit)
+```
+
+### 5.1.3 Stepwise Variable Selection Algorithms
+
+### 5.1.4 Surposeful Selection of Explanatory Variables
+
+### 5.1.5 Example: Variable Selection for Horseshoe Crabs
+
+### 5.1.6 AIC and the Bias/Variance Tradeoff
+
+$$\mathrm{AIC = -2(log\ likelihood) + 2(number\ of\ parameters\ in\ model).}$$
+
+```{r 5-1-6a}
+Crabs <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Crabs.dat",
+  header = TRUE, stringsAsFactors = TRUE
+)
+
+fit <- glm(y ~ width + factor(color), family = binomial, data = Crabs)
+
+-2*logLik(fit)
+
+AIC(fit)  # adds 2(number of parameters) = 2(5) = 10  to -2*logLik(fit)
+```
+
+```{r 5-1-6b}
+fit <- glm(y ~ width + factor(color) + factor(spine), 
+           family = binomial, data = Crabs)
+
+library(MASS)
+stepAIC(fit)
+```
+
+```{r 5-1-6c}
+
+library(tidyverse)
+# need response variable in last column of data file
+Crabs2 <- Crabs %>% 
+  select(weight, width, color, spine, y)
+
+library(leaps)
+library(bestglm)
+bestglm(Crabs2, family = binomial, IC = "AIC")  # can also use IC="BIC"
+```
+
+## 5.2 Model Checking
+
+### 5.2.1 Goodness of Fit: Model Comparison Using the Deviance {#x5.2.1}
+$$G^2 = 2\sum\mathrm{observed[log(observed/fitted)]}$$
+
+### 5.2.2 Example: Goodness of Fit for Marijuana Use Survey {#x5.2.2}
+
+```{r 5.2.2}
+library(tidyverse)
+Marijuana <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Marijuana.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+Marijuana
+
+fit <- glm(yes/(yes+no) ~ gender + race, weights = yes + no, family = binomial, 
+           data = Marijuana)
+summary(fit)  # deviance info is extracted on the next two lines
+
+fit$deviance  # deviance goodness-of-fit statistic
+fit$df.residual  # residual df
+
+1 - pchisq(fit$deviance, fit$df.residual )
+
+fitted(fit)
+library(dplyr)
+
+Marijuana %>% 
+  mutate(fit.yes = (yes+no)*fitted(fit)) %>% 
+  mutate(fit.no = (yes+no)*(1-fitted(fit))) %>% 
+  select(race, gender, yes, fit.yes, no, fit.no)
+```
+
+### 5.2.3 Goodness of Fit: Grouped versus Ungrouped Data and Continuous Predictors
+
+### 5.2.4 Residuals for Logistic Models with Categorical Predictors
+$$\mathrm{Standardized\ residual} = \frac{y_i-n_i\hat\pi_i}{SE}.$$
+### 5.2.5 Example: Graduate Admissoins at University of Florida
+
+```{r}
+library(tidyverse)
+Admissions <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Admissions.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+theModel <- glm(yes/(yes+no) ~ department, family = binomial, 
+                data = Admissions, 
+                weights = yes+no)
+
+theResiduals <- tibble(`Std. Res.` = rstandard(theModel, type = "pearson")) %>% 
+  mutate(`Std. Res.` = round(`Std. Res.`, 2)) %>% 
+  dplyr::filter(row_number() %% 2 == 0)  # every other record is female
+
+
+theTable <- Admissions %>%                  
+  mutate(gender = case_when(gender == 1 ~ "Female",
+                            gender == 0 ~ "Male")) %>% 
+  pivot_wider(id_cols = department, names_from = gender, 
+              values_from = c(yes, no), names_sep = "") %>% 
+  select(department, yesFemale, noFemale, yesMale, noMale) %>% 
+  rename("Dept" = department, "Females (Yes)" = yesFemale, "Females (No)" =
+           noFemale, "Males (Yes)" = yesMale, "Males (No)" = noMale) %>% 
+  bind_cols(theResiduals)
+
+knitr::kable(theTable)
+```
+
+$$logit(\pi_{ik}) = \alpha + \beta_k.$$
+
+### 5.2.6 Standardized versus Pearson and Deviance Residuals
+
+```{r 5.2.6a}
+fit <- glm(yes/(yes+no) ~ gender + race, weights = yes + no, family = binomial, 
+           data = Marijuana)
+
+summary(fit)
+```
+
+```{r 5.2.6b}
+knitr::kable(
+bind_cols(Standardized = rstandard(fit, type = "pearson"), 
+          Pearson = residuals(fit, type = "pearson"),
+          deviance = residuals(fit, type = "deviance"), 
+          `std dev.` = rstandard(fit, type = "deviance"),
+          Race = Marijuana$race, Gender = Marijuana$gender) %>% 
+  mutate_if(is.numeric, round, digits = 3)
+)
+```
+
+### 5.2.7 Influence Diagnostics for Logistic Regression
+
+### 5.2.8 Example: Heart Disease and Blood Pressure
+
+```{r}
+HeartBP <- read.table("http://users.stat.ufl.edu/~aa/cat/data/HeartBP.dat",
+                      header = TRUE, stringsAsFactors = TRUE)
+
+theModel <- glm(y/n ~ bp, family = binomial, data = HeartBP, weights = n)
+summary(theModel)
+
+predicted <- round(fitted(theModel)* HeartBP$n, 1)
+std_res <- round(rstandard(theModel, type = "pearson"),2)
+
+#influence.measures(theModel)
+rDfbeta <- data.frame(dfbetas(theModel)) %>% 
+  select(bp) %>% 
+  transmute(DFbeta = round(bp, 2))
+
+HeartBP %>% 
+  rename("Blood Presure" = bp,
+         "Sample size" = n,
+         "Observed Disease" = y) %>% 
+  bind_cols("Fitted Disease" = predicted,
+            "Standardized Residual" = std_res,
+            "Dfbeta (not SAS)" = rDfbeta)
+```
+
+```{r}
+library(ggthemes)
+predicted <- predict(theModel, type = "response")
+HeartBP %>% 
+  mutate(proportion=y/n) %>% 
+  ggplot(aes(x= bp, y = proportion)) +
+  geom_point(shape = 4) +
+  geom_smooth(aes(y = predicted)) +
+  theme_few() +
+  scale_x_continuous(breaks = seq(110, 200, by = 10), limits = c(110, 200)) +
+  ggtitle("Figure 5.1")
+```
+
+## 5.3 Infinite Estimates in Logistic Regression
+
+### 5.3.1 Complete and Quasi-Complete Separation: Perfeect Discrination
+
+```{r}
+library(tidyverse)
+library(ggthemes)
+data.frame (x = c(10, 20, 30, 40, 60, 70, 80, 90),
+                         y = c(0, 0, 0, 0, 1, 1, 1, 1)) %>% 
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  theme_few() +
+  ggtitle("Figure 5.2") +
+  scale_y_continuous(breaks = c(0,1)) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.title.y = element_text(angle = 0, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5)) 
+
+```
+
+### 5.3.2 Example: Infinite Estimate for Toy Example
+
+```{r 5.3.2}
+x <- c(10, 20, 30, 40, 60, 70, 80, 90)
+y <- c(0, 0, 0, 0, 1, 1, 1, 1)
+
+fit <- glm(y ~ x, family = binomial)
+
+# P-value for Wald test of H0: beta = 0
+# res deviance = 0 means perfect fit
+# Fisher iterations: 25 shows very slow convergence
+summary(fit)
+
+
+# maximized log-likelihood = 0, so maximized likelihood = 1
+logLik(fit)
+
+#library(car)
+# P-value for likelihood-ratio test of beta = 0 is more sensitive than p-value of 1 for Wald test
+car::Anova(fit)
+
+library(profileModel) # ordinary confint function fails for infinite estimates
+confintModel(fit, objective = "ordinaryDeviance", method = "zoom")
+```
+
+### 5.3.3 Sparse Data and Infinite Effects with Categorical Predictors
+
+### 5.3.4 Example: Risk Factors for Endometrial Cancer Grade {#x5.3.5}
+```{r}
+library(tidyverse)
+Endo <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Endometrial.dat",
+                   header = TRUE, stringsAsFactors = TRUE)
+
+Endo %>% 
+  filter(row_number() %in% c(1, 2, n())) 
+
+xtabs(~NV + HG, data = Endo) # quasi-complete separation when NV = 1, no HG=0 cases occur
+
+fit <- glm(HG ~ NV + PI + EH, family = binomial, data = Endo)
+
+# NV's true estimate is infinity
+summary(fit)
+
+logLik(fit)
+
+library(car)
+Anova(fit) # NV P= .0022 vs Wald 0.99
+
+library(profileModel)  # ordinary confint function fails for infinite est
+confintModel(fit, objective = "ordinaryDeviance", method = "zoom") # 95% profile likelihood CI for beta 1 
+
+library(detectseparation) # new package
+# 0 denotes finite est, Inf denotes infinite est.
+glm(HG ~ NV + PI + EH, family = binomial, data = Endo, method = "detectSeparation")
+```
+
+## 5.4 Bayesian Inference, Penalized Likelihood, and Conditional Likelihood for Logistic Regression * {#x5.4}
+
+### 5.4.1 Bayesian Modeling: Specification of Prior Distributions
+
+### 5.4.2 Example: Risk Factors for Endometrial Caner Revisited
+
+```{r 5.4.2a}
+
+Endo2 <- 
+  Endo %>% 
+  mutate(PI2 = scale(PI),
+         EH2 = scale(EH),
+         NV2 = NV - 0.5) 
+  
+fit.ML <- glm(HG ~ NV2 + PI2 + EH2, family = binomial, data = Endo2)
+summary(fit.ML)
+```
+
+
+```{r 5.4.2b}
+library(MCMCpack)  # b0 = prior mean, B0 = prior precision = 1/variance
+fitBayes <- MCMClogit(HG ~ NV2 + PI2 + EH2, mcmc = 100000, b0 = 0, B0 = 0.01, 
+                      data = Endo2) # prior var = 1/0.01 = 100, sd = 10
+
+summary(fitBayes) # posterior deviation
+
+mean(fitBayes[,2] < 0)  # probability below 0 for 2n model parameter (NV2)
+```
+
+### 5.4.3 Penalized Likelihood Reduces Bias in Logistic Regression
+$$L^*(\beta) = L(\beta) - s(\beta),$$
+
+###  5.4.4 Example: Risk Factors for Endometrial Cancer Revisited
+
+```{r}
+library(logistf)
+fit.penalized <- logistf(HG ~ NV2 + PI2 + EH2, family=binomial, data=Endo2)
+options(digits = 4)
+summary(fit.penalized)
+options(digits = 7)
+```
+
+###  5.4.5 Conditional Likelihood and Conditional Logistic Regression {#x5.4.5}
+
+$$\mathrm{logit}[P(Y_{it} = 1)] = \alpha_i + \beta x_{it},$$
+
+###  5.4.6 Conditional Logistic Regression and Exact Tests for Contingency Tables
+
+## 5.5 Alternative Link Functions: Linear Probability and Probit Models *
+
+### 5.5.1 Linar Probability Model
+$$F(Y = 1) = \alpha + \beta_1 x_1 + \cdots + \beta_px_p,$$
+
+### 5.5.2 Example: Political Ideology and Belief in Evolution
+
+```{r}
+library(tidyverse)
+Evo <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Evolution2.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+
+Evo %>% 
+  filter(row_number() %in% c(1, 2, n())) 
+
+fit <- glm(evolved ~ ideology, 
+           family=quasi(link=identity, variance = "mu(1-mu)"), 
+           data = Evo)
+
+summary(fit, dispersion = 1)
+
+fit2 <- glm(evolved ~ ideology, family=gaussian(link=identity), data = Evo)
+
+summary(fit2)
+
+```
+
+### 5.5.3 Probit Model and Normal Latent Variable Model {#x5.5.3}
+$$\mathrm{probit}[F(Y = 1)] = \alpha + \beta_1 x_1 + \cdots + \beta_px_p$$
+
+$$y^* = \alpha + \beta_1 x_1+ \cdots + \beta_px_p + \epsilon.$$
+
+### 5.5.4 Example: Snoring and Heart Disease Revisited
+$$\mathrm{probit}[\hat P(Y = 1)] = -2.061 + 0.188x.$$
+
+```{r}
+library(tidyverse)
+Heart <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Heart.dat",
+                        header = TRUE, stringsAsFactors = TRUE)
+Heart
+
+# recode() is in dplyr and car...
+Heart <- Heart %>% 
+  mutate(snoringNights = dplyr::recode(snoring, never = 0, occasional = 2, 
+                                       nearly_every_night = 4, every_night = 5)) 
+
+fit <- glm(yes/(yes+no) ~ snoringNights, family = binomial(link = probit), 
+           weights = yes+no, data = Heart)
+
+summary(fit)
+
+options(digits = 4)
+fitted(fit)
+options(digits = 7)
+```
+
+### 5.5.5 Latent Variable Models Imply Binary Regression Models
+
+### 5.5.6 CDFs and Shapes of Curves for Binary Reegressoin Models
+
+## 5.6 Sample Size and Power for Logistic Regression *
+
+### 5.6.1 Sample Size for Comparing Two Proportions
+
+### 5.6.2 Sample Size in Logistic Regression Modeling
+
+### 5.6.3 Example: Modeling the Probability of Heart Disease 
+
+
+
