@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10 Random Effects: Generalized Linear Mixed Models | Notes for Agresti’s Introduction to Categorical Data Analysis 3rd Edition</title>
+  <meta name="description" content="Notes for Agresti’s Introduction to Categorical Data Analysis" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10 Random Effects: Generalized Linear Mixed Models | Notes for Agresti’s Introduction to Categorical Data Analysis 3rd Edition" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Notes for Agresti’s Introduction to Categorical Data Analysis" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10 Random Effects: Generalized Linear Mixed Models | Notes for Agresti’s Introduction to Categorical Data Analysis 3rd Edition" />
+  
+  <meta name="twitter:description" content="Notes for Agresti’s Introduction to Categorical Data Analysis" />
+  
+
+<meta name="author" content="Raymond R. Balise and Wayne F. DeFreitas" />
+
+
+<meta name="date" content="2021-01-08" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="Marginal.html"/>
+<link rel="next" href="Classification.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/tabwid-1.0.0/tabwid.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>1 Introduction</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#categorical-response-data"><i class="fa fa-check"></i>1.1 Categorical Response Data</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#response-variables-and-explanatory-variables"><i class="fa fa-check"></i>1.1.1 Response Variables and Explanatory Variables</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#binary-nominal-ordinal-scale-distinction"><i class="fa fa-check"></i>1.1.2 Binary-Nominal-Ordinal Scale Distinction</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#organization-of-this-book"><i class="fa fa-check"></i>1.1.3 Organization of this Book</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#probability-distributions-for-categorical-data"><i class="fa fa-check"></i>1.2 Probability Distributions for Categorical Data</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#binomial"><i class="fa fa-check"></i>1.2.1 Binomial Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#statistical-inference-for-a-proportion"><i class="fa fa-check"></i>1.3 Statistical Inference for a Proportion</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#likelihood-function-and-maximum-likelihood-estimation"><i class="fa fa-check"></i>1.3.1 Likelihood Function and Maximum Likelihood Estimation</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#significance-test-about-a-binomial-parameter"><i class="fa fa-check"></i>1.3.2 Significance Test about a Binomial Parameter</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#example-surveyed-opinions-about-legalized-abortion"><i class="fa fa-check"></i>1.3.3 Example: Surveyed Opinions About Legalized Abortion</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#confidence-intervals-for-a-binomial-parameter"><i class="fa fa-check"></i>1.3.4 Confidence Intervals for a Binomial Parameter</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#better-confidence-intervals-for-a-binomial-proportion"><i class="fa fa-check"></i>1.3.5 Better Confidence Intervals for a Binomial Proportion</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#statistical-inference-for-discrete-data"><i class="fa fa-check"></i>1.4 Statistical Inference for Discrete Data</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#x1.4.1"><i class="fa fa-check"></i>1.4.1 Wald, Likelihood-Ratio, and Score Tests</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#example-wald-score-and-likelihood-ratio-binomial-tests"><i class="fa fa-check"></i>1.4.2 Example Wald, Score and Likelihood-Ratio Binomial Tests</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#ssbi"><i class="fa fa-check"></i>1.4.3 Small-Sample Binomial Inference and the Mid P-Value</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bayesian-inference-for-proportions"><i class="fa fa-check"></i>1.5 Bayesian Inference for Proportions</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#the-bayesian-approach-to-statistical-inference"><i class="fa fa-check"></i>1.5.1 The Bayesian Approach to Statistical Inference</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#bayesian-binomial-inference-beta-prior-distributions"><i class="fa fa-check"></i>1.5.2 Bayesian Binomial Inference: Beta Prior Distributions</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#example-opinions-about-legalized-abortion-revisited"><i class="fa fa-check"></i>1.5.3 Example: Opinions about Legalized Abortion, Revisited</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#other-prior-distributions"><i class="fa fa-check"></i>1.5.4 Other Prior Distributions</a></li>
+</ul></li>
+<li><a href="index.html#using-r-software-for-statistical-inference-about-proportions">1.6 Using <code>R</code> software for Statistical Inference about Proportions</a><ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#reading-data-files-and-installing-packages"><i class="fa fa-check"></i>1.6.1 Reading Data Files and Installing Packages</a></li>
+<li><a href="index.html#using-r-for-statistical-inference-about-proportions">1.6.2 Using <code>R</code> for Statistical Inference about Proportions</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#summary-choosing-an-inference-method"><i class="fa fa-check"></i>1.6.3 Summary: Choosing an Inference Method</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#exercises"><i class="fa fa-check"></i>Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html"><i class="fa fa-check"></i>2 Analyzing Contingency Tables</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#probability-structure-for-contingency-tables"><i class="fa fa-check"></i>2.1 Probability Structure for Contingency Tables</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#joint-marginal-and-conditional-probabilities"><i class="fa fa-check"></i>2.1.1 Joint, Marginal, and Conditional Probabilities</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#binomial-and-multinomial-sampling"><i class="fa fa-check"></i>2.1.4 Binomial and Multinomial Sampling</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#comparing-proportions-in-2-x-2-contingency-tables"><i class="fa fa-check"></i>2.2 Comparing Proportions in 2 x 2 Contingency Tables</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#difference-of-proportions"><i class="fa fa-check"></i>2.2.1 Difference of Proportions</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#table2-2"><i class="fa fa-check"></i>2.2.2 Example: Aspirin and incidence of Heart Attacks</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#ratio-of-proportions-relative-risk"><i class="fa fa-check"></i>2.2.3 Ratio of Proportions (Relative Risk)</a></li>
+<li><a href="Contingency.html#using-r-for-comparing-proportions-in-2-x-2-tables">2.2.4 Using <code>R</code> for Comparing Proportions in 2 x 2 Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#the-odds-ratio"><i class="fa fa-check"></i>2.3 The Odds Ratio</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#properties-of-the-odds-ratio"><i class="fa fa-check"></i>2.3.1 Properties of the Odds Ratio</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#example-odds-ratio-for-aspirin-and-hart-attacks"><i class="fa fa-check"></i>2.3.2 Example: Odds Ratio for Aspirin and Hart Attacks</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#inference-for-odds-ratios-and-log-odds-ratios"><i class="fa fa-check"></i>2.3.3 Inference for Odds Ratios and Log Odds Ratios</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#relationship-between-odds-ratio-and-relative-risk"><i class="fa fa-check"></i>2.3.4 Relationship Between Odds Ratio and Relative Risk</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#x2.3.5"><i class="fa fa-check"></i>2.3.5 Example: The Odds Ratio Applies in Case-Control Studies</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#types-of-studies-observational-versus-experimental"><i class="fa fa-check"></i>2.3.6 Types of Studies Observational Versus Experimental</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#x2.4"><i class="fa fa-check"></i>2.4 Chi-Squared Tests of Independence</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#x2.4.1"><i class="fa fa-check"></i>2.4.1 Pearson Statistic and the Chi-Squared Distribution</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#likelihood-ratio-statistic"><i class="fa fa-check"></i>2.4.2 likelihood-Ratio Statistic</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#testing-independence-in-two-way-contingency-tables"><i class="fa fa-check"></i>2.4.3 Testing Independence in Two-Way Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#example-gender-gap-in-political-party-affiliation"><i class="fa fa-check"></i>2.4.4 Example: Gender Gap in Political Party Affiliation</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#residuals-for-cells-in-a-contingency-table"><i class="fa fa-check"></i>2.4.5 Residuals for Cells in a Contingency Table</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#partitioning-chi-squared-statistics"><i class="fa fa-check"></i>2.4.6 Partitioning Chi-Squared Statistics</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#limitations-of-chi-squared-tests"><i class="fa fa-check"></i>2.4.7 Limitations of Chi-Squared Tests</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#x2.5"><i class="fa fa-check"></i>2.5 Testing Independence for Ordinal Variables</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#linear-trend-alternative-to-independence"><i class="fa fa-check"></i>2.5.1 Linear Trend Alternative to Independence</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#example-alcohol-use-and-infant-malformation"><i class="fa fa-check"></i>2.5.2 Example: Alcohol Use and Infant Malformation</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#ordinal-tests-usually-have-greater-power"><i class="fa fa-check"></i>2.5.3 Ordinal Tests Usually Have Greater Power</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#choice-of-scores"><i class="fa fa-check"></i>2.5.4 Choice of Scores</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#trend-tests-for-r-x-2-and-2-x-c-and-nominal-ordinal-tables"><i class="fa fa-check"></i>2.5.6 Trend Tests for r x 2 and 2 x c and Nominal-Ordinal Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#exact-frequentist-and-bayesian-inference"><i class="fa fa-check"></i>2.6 Exact Frequentist and Bayesian Inference</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#fishers-exact-test-for-2-x-2-tables"><i class="fa fa-check"></i>2.6.1 Fisher’s Exact Test for 2 x 2 Tables</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#example-fishers-tea-tasting-colleague"><i class="fa fa-check"></i>2.6.2 Example: Fisher’s Tea Tasting Colleague</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#conservatism-for-actual-ptype-i-error-mid-p-value"><i class="fa fa-check"></i>2.6.3 Conservatism for Actual P(Type I Error); Mid P-Value</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#small-sample-confidence-intervals-for-odds-ratio"><i class="fa fa-check"></i>2.6.4 Small-Sample Confidence Intervals for Odds Ratio</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#bayesian-estimation-for-association-measures"><i class="fa fa-check"></i>2.6.5 Bayesian Estimation for Association Measures</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#example-bayesian-inference-in-a-small-clinical-trial"><i class="fa fa-check"></i>2.6.6 Example: Bayesian Inference in a Small Clinical Trial</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#association-in-three-way-tables"><i class="fa fa-check"></i>2.7 Association in Three-Way Tables</a><ul>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#partial-tables"><i class="fa fa-check"></i>2.7.1 Partial Tables</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#example-death-penalty-verdicts-and-race"><i class="fa fa-check"></i>2.7.2 Example: Death Penalty Verdicts and Race</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#simpsons-paradox"><i class="fa fa-check"></i>2.7.3 Simpson’s Paradox</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#conditional-and-marginal-odds-ratios"><i class="fa fa-check"></i>2.7.4 Conditional and Marginal Odds Ratios</a></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#x2.7.5"><i class="fa fa-check"></i>2.7.5 Homogeneous Association</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Contingency.html"><a href="Contingency.html#exercises-1"><i class="fa fa-check"></i>Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html"><i class="fa fa-check"></i>3 Generalized Linear Models</a><ul>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#components-of-a-generalized-linear-model"><i class="fa fa-check"></i>3.1 Components of a Generalized Linear Model</a><ul>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#random-component"><i class="fa fa-check"></i>3.1.1 Random Component</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#linear-predictor"><i class="fa fa-check"></i>3.1.2 Linear Predictor</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#link-function"><i class="fa fa-check"></i>3.1.3 Link Function</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#ordinary-linear-model-glm-with-normal-random-component"><i class="fa fa-check"></i>3.1.4 Ordinary Linear Model: GLM with Normal Random Component</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#components-of-a-generalized-linear-model-1"><i class="fa fa-check"></i>3.2 Components of a Generalized Linear Model</a><ul>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.2.1"><i class="fa fa-check"></i>3.2.1 Linear Probability Model</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#logistic-regression-model"><i class="fa fa-check"></i>3.2.2 Logistic Regression Model</a></li>
+<li><a href="Generalized.html#using-r-to-fit-generalized-lineare-models-for-binary-data">3.2.4 Using <code>R</code> to Fit Generalized Lineare Models for Binary Data</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.2.5"><i class="fa fa-check"></i>3.2.5 Data Files: Ungrouped or Grouped Binary Data</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.3"><i class="fa fa-check"></i>3.3 Generalized Linear Models for Binary Data</a><ul>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#poisson-distribution-for-counts"><i class="fa fa-check"></i>3.3.1 Poisson Distribution for Counts</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#poisson-loglinear-model"><i class="fa fa-check"></i>3.3.2 Poisson Loglinear Model</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.3.3"><i class="fa fa-check"></i>3.3.3 Example: Female Horseshoe Crabs and their Satellites</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.3.4"><i class="fa fa-check"></i>3.3.4 Overdispersion: Greater Variability than Expected</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#generalized-lineaer-models-for-counts-and-rates"><i class="fa fa-check"></i>3.4 Generalized Lineaer Models for Counts and Rates</a><ul>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.4.1"><i class="fa fa-check"></i>3.4.1 Wald, Likelihood-Ratio, and Score Inference Use the Likelihood Function</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#example-political-ideology-and-belief-in-evolution"><i class="fa fa-check"></i>3.4.2 Example Political Ideology and Belief in Evolution</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#model-comparison-using-the-deviance"><i class="fa fa-check"></i>3.4.4 Model Comparison Using the Deviance</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.4.5"><i class="fa fa-check"></i>3.4.5 Residuals Comparing Ovservations to the Model Fit</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#fitting-generalized-linear-models"><i class="fa fa-check"></i>3.5 Fitting Generalized Linear Models</a><ul>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#x3.5.1"><i class="fa fa-check"></i>3.5.1 The Fisher Scoring Algorithm Fits GLMs</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#bayesian-methods-for-generalized-lineare-models"><i class="fa fa-check"></i>3.5.2 Bayesian Methods for Generalized Lineare Models</a></li>
+<li class="chapter" data-level="" data-path="Generalized.html"><a href="Generalized.html#glms-a-unified-approach-to-statistical-analysis"><i class="fa fa-check"></i>3.5.3 GLMs: A Unified Approach to Statistical Analysis</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html"><i class="fa fa-check"></i>4 Logistic Regression</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#the-logistic-regression-model"><i class="fa fa-check"></i>4.1 The Logistic Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#the-logistic-regression-model-1"><i class="fa fa-check"></i>4.1.1 The Logistic Regression Model</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#odds-ratio-and-linear-approximaiton-interpreetations-4.1.2"><i class="fa fa-check"></i>4.1.2 Odds Ratio and Linear Approximaiton Interpreetations {#4.1.2}</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.1.3"><i class="fa fa-check"></i>4.1.3 Example: Whethr a Female Horsehoe Crab Has Satelites</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#logistic-regression-with-retrospective-studies"><i class="fa fa-check"></i>4.1.4 Logistic Regression with Retrospective Studies</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#normally-distributed-x-implies-logistic-regression-for-y"><i class="fa fa-check"></i>4.1.5 Normally Distributed X Implies Logistic Regression for Y</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.2"><i class="fa fa-check"></i>4.2 Statistical Inference for Logistic Regression</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.2.1"><i class="fa fa-check"></i>4.2.1 Confidence Intervals for Effects</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.2.2"><i class="fa fa-check"></i>4.2.2 Significance Testing</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#fitted-values-and-confidence-intervals-for-probabilities"><i class="fa fa-check"></i>4.2.3 Fitted Values and Confidence Intervals for Probabilities</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#why-use-a-model-to-estimate-probabilities"><i class="fa fa-check"></i>4.2.4 Why Use a Model to Estimate Probabilities?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#logistic-regression-with-categorical-predictors"><i class="fa fa-check"></i>4.3 Logistic Regression with Categorical Predictors</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#indicator-variables-represent-categories-of-predictors"><i class="fa fa-check"></i>4.3.1 Indicator Variables Represent Categories of Predictors</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#example-survey-about-marijuana-use"><i class="fa fa-check"></i>4.3.2 Example: Survey about Marijuana Use</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#anova-type-model-representation-of-factors"><i class="fa fa-check"></i>4.3.3 ANOVA-Type Model Representation of Factors</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#tests-of-conditoinal-independence-and-of-homogeneity-for-three-way-contingency-tables"><i class="fa fa-check"></i>4.3.4 Tests of Conditoinal Independence and of Homogeneity for Three-Way Contingency Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#multiple-logistic-regression"><i class="fa fa-check"></i>4.4 Multiple Logistic Regression</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.4.1"><i class="fa fa-check"></i>4.4.1 Example: Horseshoe Crabs with Color and Width Predictors</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#model-comparison-to-check-whether-a-term-is-needed"><i class="fa fa-check"></i>4.4.2 Model Comparison to Check Whether a Term is Needed</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#example-treating-color-as-quantitative-or-binary"><i class="fa fa-check"></i>4.4.3 Example: Treating Color as Quantitative or Binary</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#allowing-interaction-between-explanatory-variables"><i class="fa fa-check"></i>4.4.4 Allowing Interaction between Explanatory Variables</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#effects-depend-on-other-explanatory-variables-in-model"><i class="fa fa-check"></i>4.4.5 Effects Depend on Other Explanatory Variables in Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#summarizing-effects-in-logistic-regression"><i class="fa fa-check"></i>4.5 Summarizing Effects in Logistic Regression</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#probability-based-interpretations"><i class="fa fa-check"></i>4.5.1 Probability-Based Interpretations</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.5.2"><i class="fa fa-check"></i>4.5.2 Marginal Effects and Their Average</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.5.3"><i class="fa fa-check"></i>4.5.3 Standardized Interpretations</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#summzarizing-predictive-power-classification-tables-roc-curves-and-multiple-correlation"><i class="fa fa-check"></i>4.6 Summzarizing Predictive Power: Classification Tables, ROC Curves and Multiple Correlation</a><ul>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.6.1"><i class="fa fa-check"></i>4.6.1 Summarizing Predictive Power: Classification Tables</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#summarizing-predictive-power-roc-curves"><i class="fa fa-check"></i>4.6.2 Summarizing Predictive Power: ROC Curves</a></li>
+<li class="chapter" data-level="" data-path="Logistic.html"><a href="Logistic.html#x4.6.3"><i class="fa fa-check"></i>4.6.3 Summarizing Predictive Power: Multiple Correlation</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html"><i class="fa fa-check"></i>5 Building and Applying Logistic Regression Models</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#strategies-in-model-selection"><i class="fa fa-check"></i>5.1 Strategies in Model Selection</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#how-many-explanatory-variables-can-the-model-handle"><i class="fa fa-check"></i>5.1.1 How Many Explanatory Variables Can the Model Handle?</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-horseshoe-crab-satellites-revisited"><i class="fa fa-check"></i>5.1.2 Example: Horseshoe Crab Satellites Revisited</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#stepwise-variable-selection-algorithms"><i class="fa fa-check"></i>5.1.3 Stepwise Variable Selection Algorithms</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#surposeful-selection-of-explanatory-variables"><i class="fa fa-check"></i>5.1.4 Surposeful Selection of Explanatory Variables</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-variable-selection-for-horseshoe-crabs"><i class="fa fa-check"></i>5.1.5 Example: Variable Selection for Horseshoe Crabs</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#aic-and-the-biasvariance-tradeoff"><i class="fa fa-check"></i>5.1.6 AIC and the Bias/Variance Tradeoff</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#model-checking"><i class="fa fa-check"></i>5.2 Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#x5.2.1"><i class="fa fa-check"></i>5.2.1 Goodness of Fit: Model Comparison Using the Deviance</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#x5.2.2"><i class="fa fa-check"></i>5.2.2 Example: Goodness of Fit for Marijuana Use Survey</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#goodness-of-fit-grouped-versus-ungrouped-data-and-continuous-predictors"><i class="fa fa-check"></i>5.2.3 Goodness of Fit: Grouped versus Ungrouped Data and Continuous Predictors</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#residuals-for-logistic-models-with-categorical-predictors"><i class="fa fa-check"></i>5.2.4 Residuals for Logistic Models with Categorical Predictors</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#standardized-versus-pearson-and-deviance-residuals"><i class="fa fa-check"></i>5.2.6 Standardized versus Pearson and Deviance Residuals</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#influence-diagnostics-for-logistic-regression"><i class="fa fa-check"></i>5.2.7 Influence Diagnostics for Logistic Regression</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-heart-disease-and-blood-pressure"><i class="fa fa-check"></i>5.2.8 Example: Heart Disease and Blood Pressure</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#infinite-estimates-in-logistic-regression"><i class="fa fa-check"></i>5.3 Infinite Estimates in Logistic Regression</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#complete-and-quasi-complete-separation-perfeect-discrination"><i class="fa fa-check"></i>5.3.1 Complete and Quasi-Complete Separation: Perfeect Discrination</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-infinite-estimate-for-toy-example"><i class="fa fa-check"></i>5.3.2 Example: Infinite Estimate for Toy Example</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#sparse-data-and-infinite-effects-with-categorical-predictors"><i class="fa fa-check"></i>5.3.3 Sparse Data and Infinite Effects with Categorical Predictors</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#x5.3.5"><i class="fa fa-check"></i>5.3.4 Example: Risk Factors for Endometrial Cancer Grade</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#x5.4"><i class="fa fa-check"></i>5.4 Bayesian Inference, Penalized Likelihood, and Conditional Likelihood for Logistic Regression *</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#bayesian-modeling-specification-of-prior-distributions"><i class="fa fa-check"></i>5.4.1 Bayesian Modeling: Specification of Prior Distributions</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-risk-factors-for-endometrial-caner-revisited"><i class="fa fa-check"></i>5.4.2 Example: Risk Factors for Endometrial Caner Revisited</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#penalized-likelihood-reduces-bias-in-logistic-regression"><i class="fa fa-check"></i>5.4.3 Penalized Likelihood Reduces Bias in Logistic Regression</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-risk-factors-for-endometrial-cancer-revisited"><i class="fa fa-check"></i>5.4.4 Example: Risk Factors for Endometrial Cancer Revisited</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#x5.4.5"><i class="fa fa-check"></i>5.4.5 Conditional Likelihood and Conditional Logistic Regression</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#conditional-logistic-regression-and-exact-tests-for-contingency-tables"><i class="fa fa-check"></i>5.4.6 Conditional Logistic Regression and Exact Tests for Contingency Tables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#alternative-link-functions-linear-probability-and-probit-models"><i class="fa fa-check"></i>5.5 Alternative Link Functions: Linear Probability and Probit Models *</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#linar-probability-model"><i class="fa fa-check"></i>5.5.1 Linar Probability Model</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-political-ideology-and-belief-in-evolution-1"><i class="fa fa-check"></i>5.5.2 Example: Political Ideology and Belief in Evolution</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#x5.5.3"><i class="fa fa-check"></i>5.5.3 Probit Model and Normal Latent Variable Model</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-snoring-and-heart-disease-revisited"><i class="fa fa-check"></i>5.5.4 Example: Snoring and Heart Disease Revisited</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#latent-variable-models-imply-binary-regression-models"><i class="fa fa-check"></i>5.5.5 Latent Variable Models Imply Binary Regression Models</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#cdfs-and-shapes-of-curves-for-binary-reegressoin-models"><i class="fa fa-check"></i>5.5.6 CDFs and Shapes of Curves for Binary Reegressoin Models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#sample-size-and-power-for-logistic-regression"><i class="fa fa-check"></i>5.6 Sample Size and Power for Logistic Regression *</a><ul>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#sample-size-for-comparing-two-proportions"><i class="fa fa-check"></i>5.6.1 Sample Size for Comparing Two Proportions</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#sample-size-in-logistic-regression-modeling"><i class="fa fa-check"></i>5.6.2 Sample Size in Logistic Regression Modeling</a></li>
+<li class="chapter" data-level="" data-path="building-and-applying-logistic-regression-models.html"><a href="building-and-applying-logistic-regression-models.html#example-modeling-the-probability-of-heart-disease"><i class="fa fa-check"></i>5.6.3 Example: Modeling the Probability of Heart Disease</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html"><i class="fa fa-check"></i>6 Multicategory Logit Models</a><ul>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#baseline-category-logit-models-for-nominal-responses"><i class="fa fa-check"></i>6.1 Baseline-Category Logit Models for Nominal Responses</a><ul>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#baseline-category-logits"><i class="fa fa-check"></i>6.1.1 Baseline-Category Logits</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-what-do-alligators-eat"><i class="fa fa-check"></i>6.1.2 Example: What Do Alligators Eat?</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#estimating-response-probabilities"><i class="fa fa-check"></i>6.1.3 Estimating Response Probabilities</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#checking-multinomial-model-goodness-of-fit"><i class="fa fa-check"></i>6.1.4 Checking multinomial Model Goodness of Fit</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-belief-in-afterlife"><i class="fa fa-check"></i>6.1.5 Example: Belief in Afterlife</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#discrete-choice-models"><i class="fa fa-check"></i>6.1.6 Discrete Choice Models*</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-shopping-destination-choice"><i class="fa fa-check"></i>6.1.7 Example: Shopping Destination Choice*</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#cumulative-logit-models-for-ordinal-responses-x6.2"><i class="fa fa-check"></i>6.2 Cumulative Logit Models for Ordinal Responses {x6.2}</a><ul>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#x6.2.1"><i class="fa fa-check"></i>6.2.1 Cumulative Logit Models with Proportional Odds</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#x6.2.2"><i class="fa fa-check"></i>6.2.2 Example: Political Ideology and Political Party Affiliation</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#inference-about-cumulative-logit-model-parameters"><i class="fa fa-check"></i>6.2.3 Inference about Cumulative Logit Model Parameters</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#increased-power-for-ordinal-analyses"><i class="fa fa-check"></i>6.2.4 Increased Power for Ordinal Analyses</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-happiness-and-family-income"><i class="fa fa-check"></i>6.2.5 Example: Happiness and Family Income</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#x6.2.6"><i class="fa fa-check"></i>6.2.6 Latent Variable Linear Models Imply Cumulative Link Models</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#invariance-to-choice-of-response-categories"><i class="fa fa-check"></i>6.2.7 Invariance to Choice of Response Categories</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#cumulative-link-models-model-checking-and-extensions"><i class="fa fa-check"></i>6.3 Cumulative Link Models: Model Checking and Extensions *</a><ul>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#checking-ordinal-model-goodness-of-fit"><i class="fa fa-check"></i>6.3.1 Checking Ordinal Model Goodness of Fit</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#cumulative-logit-model-without-proportional-odds"><i class="fa fa-check"></i>6.3.2 Cumulative Logit Model without Proportional Odds</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#simpler-interpretatoins-using-probabiliteis"><i class="fa fa-check"></i>6.3.3 Simpler Interpretatoins Using Probabiliteis</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-modeling-mental-impairment"><i class="fa fa-check"></i>6.3.4 Example: Modeling Mental Impairment</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#a-latent-variable-probability-comparison-of-groups"><i class="fa fa-check"></i>6.3.5 A Latent Variable Probability Comparison of Groups</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#cumulative-probit-model"><i class="fa fa-check"></i>6.3.6 Cumulative Probit Model</a></li>
+<li><a href="Multicategory.html#r2-based-on-latent-variable-model">6.3.7 <span class="math inline">\(R^2\)</span> Based on Latent Variable Model</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#bayesian-inference-for-multinomial-models"><i class="fa fa-check"></i>6.3.8 Bayesian Inference for Multinomial Models</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-modeling-mental-impairment-revisited"><i class="fa fa-check"></i>6.3.9 Example: Modeling Mental Impairment Revisited</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#paired-category-logit-modeling-of-ordinal-response"><i class="fa fa-check"></i>6.4 Paired-Category Logit Modeling of Ordinal Response *</a><ul>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#adjacent-categories-logits"><i class="fa fa-check"></i>6.4.1 Adjacent-Categories Logits</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-political-ideology-revisited"><i class="fa fa-check"></i>6.4.2 Example: Political Ideology Revisited</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#sequential-logits"><i class="fa fa-check"></i>6.4.3 Sequential Logits</a></li>
+<li class="chapter" data-level="" data-path="Multicategory.html"><a href="Multicategory.html#example-tonsil-size-and-streptococcus"><i class="fa fa-check"></i>6.4.4 Example: Tonsil Size and Streptococcus</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html"><i class="fa fa-check"></i>7 Loglinear Models for Contingency Tables and Counts</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#loglinear-models-for-counts-in-contingency-tables"><i class="fa fa-check"></i>7.1 Loglinear Models for Counts in Contingency Tables</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#loglinear-model-of-independence-for-two-way-contingency-tables"><i class="fa fa-check"></i>7.1.1 Loglinear Model of Independence for Two-Way Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#interpretation-of-parameters-in-the-independence-model"><i class="fa fa-check"></i>7.1.2 Interpretation of Parameters in the Independence Model</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-happiness-and-belief-in-heaven"><i class="fa fa-check"></i>7.1.3 Example: Happiness and Belief in Heaven</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#saturated-model-for-two-way-contingency-tables"><i class="fa fa-check"></i>7.1.4 Saturated Model for Two-Way Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#loglinear-models-for-three-way-contingency-tables"><i class="fa fa-check"></i>7.1.5 Loglinear Models for Three-Way Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#two-factor-parameters-describe-conditional-associations"><i class="fa fa-check"></i>7.1.6 Two-Factor Parameters Describe Conditional Associations</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-student-alcohol-cigarette-and-marijuana-use"><i class="fa fa-check"></i>7.1.7 Example: Student Alcohol, Cigarette, and Marijuana Use</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#statistical-inference-for-loglinear-models"><i class="fa fa-check"></i>7.2 Statistical Inference for Loglinear Models</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#chi-squared-goodness-of-fit-tests"><i class="fa fa-check"></i>7.2.1 Chi-Squared Goodness-of-Fit Tests</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#x7.2.2"><i class="fa fa-check"></i>7.2.2 Cell Standardized Residuals for Loglinear Models</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#significance-tests-about-conditional-associations"><i class="fa fa-check"></i>7.2.3 Significance Tests about Conditional Associations</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#confidence-intervals-for-conditional-odds-ratios"><i class="fa fa-check"></i>7.2.4 Confidence Intervals for Conditional Odds Ratios</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#bayesian-fitting-of-loglinear-models"><i class="fa fa-check"></i>7.2.5 Bayesian Fitting of Loglinear Models</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#loglinear-models-for-higher-dimensional-contingency-tables"><i class="fa fa-check"></i>7.2.6 Loglinear Models for Higher-Dimensional Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-automobile-accidents-and-seat-belts"><i class="fa fa-check"></i>7.2.7 Example: Automobile Accidents and Seat Belts</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#interpreting-three-factor-interaction-terms"><i class="fa fa-check"></i>7.2.8 Interpreting Three-Factor Interaction Terms</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#statistical-versus-practical-significance-dissimilarity-index"><i class="fa fa-check"></i>7.2.9 Statistical Versus Practical Significance: Dissimilarity Index</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#the-loglinear---logistic-model-connection"><i class="fa fa-check"></i>7.3 The Loglinear - Logistic Model Connection</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#using-logistic-models-to-interpret-loglinear-models"><i class="fa fa-check"></i>7.3.1 Using Logistic Models to Interpret Loglinear Models</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-auto-accident-data-revisited"><i class="fa fa-check"></i>7.3.2 Example: Auto Accident Data Revisited</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#condition-for-equivalent-loglinear-and-logistic-models"><i class="fa fa-check"></i>7.3.3 Condition for Equivalent Loglinear and Logistic Models</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#loglinearlogistic-model-selection-issues"><i class="fa fa-check"></i>7.3.4 Loglinear/Logistic Model Selection Issues</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#independence-graphs-and-collapsibility"><i class="fa fa-check"></i>7.4 Independence Graphs and Collapsibility</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#independence-graphs"><i class="fa fa-check"></i>7.4.1 Independence Graphs</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#collapsibility-conditions-for-contingency-tables"><i class="fa fa-check"></i>7.4.2 Collapsibility Conditions for Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-loglinear-model-building-for-student-substance-use"><i class="fa fa-check"></i>7.4.3 Example: Loglinear Model Building for Student Substance Use</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#collapsibility-and-logistic-models"><i class="fa fa-check"></i>7.4.4 Collapsibility and Logistic Models</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#modeling-ordinal-associations-in-contingency-tables"><i class="fa fa-check"></i>7.5 Modeling Ordinal Associations in Contingency Tables</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#linear-by-linear-association-model"><i class="fa fa-check"></i>7.5.1 Linear-by-Linear Association Model</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-linear-by-linear-association-for-sex-opinions"><i class="fa fa-check"></i>7.5.2 Example: Linear-by-Linear Association for Sex Opinions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#loglinear-modeling-of-count-response-variables"><i class="fa fa-check"></i>7.6 Loglinear Modeling of Count Response Variables *</a><ul>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#count-regressoin-modeling-of-rate-data"><i class="fa fa-check"></i>7.6.1 Count Regressoin Modeling of Rate Data</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-death-rates-for-lung-cancer-patients"><i class="fa fa-check"></i>7.6.2 Example: Death Rates for Lung Cancer Patients</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#negativee-binomial-regression-models"><i class="fa fa-check"></i>7.6.3 Negativee Binomial Regression Models</a></li>
+<li class="chapter" data-level="" data-path="Loglinear.html"><a href="Loglinear.html#example-female-horseshoe-crab-satelites-revisited"><i class="fa fa-check"></i>7.6.4 Example: Female Horseshoe Crab Satelites Revisited</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html"><i class="fa fa-check"></i>8 Models for Matched Pairs</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.1"><i class="fa fa-check"></i>8.1 Comparing Dependent Proporitons for Binary Mached Pairs</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#mcnemar-test-comparing-marginal-proportions"><i class="fa fa-check"></i>8.1.1 McNemar Test Comparing Marginal Proportions</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#estimating-the-difference-between-dependent-proportions"><i class="fa fa-check"></i>8.1.2 Estimating the difference between Dependent Proportions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.2"><i class="fa fa-check"></i>8.2 Marginal Models and Subject-Specific Models for Matched Pairs</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.2.1"><i class="fa fa-check"></i>8.2.1 Marginal Models for Marginal Proportions</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#example-enironmental-options-revisted"><i class="fa fa-check"></i>8.2.2 Example: Enironmental Options Revisted</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.2.3"><i class="fa fa-check"></i>8.2.3 Subject-Specific and Population-Averaging Tables</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.2.4"><i class="fa fa-check"></i>8.2.4 Conditional Logistic Regression for Matched-Pairs*</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#comparing-proportions-for-nominal-matched-pairs-responses"><i class="fa fa-check"></i>8.3 Comparing Proportions for Nominal Matched-Pairs Responses</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#marginal-homogeneity-for-baseline-category-logit-models"><i class="fa fa-check"></i>8.3.1 Marginal Homogeneity for Baseline-Category Logit Models</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#using-cochran-mantel-haenszel-test-to-test-marinal-homogeneity"><i class="fa fa-check"></i>8.3.3 Using Cochran-Mantel-Haenszel Test to Test marinal Homogeneity*</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.3.4"><i class="fa fa-check"></i>8.3.4 Symmetry and Quasi-Symmetry Models for Square Contingency Tables</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#example-coffee-brand-market-share-revisited"><i class="fa fa-check"></i>8.3.5 Example: Coffee Brand market Share Revisited</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#comparing-proportions-for-ordinal-matched-pairs-responses"><i class="fa fa-check"></i>8.4 Comparing Proportions for Ordinal Matched-Pairs Responses</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#marginal-homogeneity-and-cummulative-logit-marginal-model"><i class="fa fa-check"></i>8.4.1 Marginal Homogeneity and Cummulative Logit Marginal Model</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#x8.4.2"><i class="fa fa-check"></i>8.4.2 Example: Recycle or Drive Less to Help the Environment?</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#an-ordinal-quasi-symmetry-model"><i class="fa fa-check"></i>8.4.3 An Ordinal Quasi-Symmetry Model *</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#example-recycle-or-drive-less-revisited"><i class="fa fa-check"></i>8.4.4 Example: Recycle or Drive Less Revisited?</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#analyzing-rater-agreement"><i class="fa fa-check"></i>8.5 Analyzing Rater Agreement *</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#example-agreement-on-carcinoma-diagnosis"><i class="fa fa-check"></i>8.5.1 Example: Agreement on Carcinoma Diagnosis</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#cell-residuals-for-independence-model"><i class="fa fa-check"></i>8.5.2 Cell Residuals for Independence Model</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#quasi-independence-model"><i class="fa fa-check"></i>8.5.3 Quasi-Independence Model</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#quasi-independence-and-odds-ratios-summarizing-agreement"><i class="fa fa-check"></i>8.5.4 Quasi Independence and Odds Ratios Summarizing Agreement</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#kappa-summary-measure-of-agreement"><i class="fa fa-check"></i>8.5.5 Kappa Summary Measure of Agreement</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#bradley-terry-model-for-paired-preferences"><i class="fa fa-check"></i>8.6 Bradley-Terry Model for Paired Preferences *</a><ul>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#the-bradley-terry-model-of-quasi-symmetry"><i class="fa fa-check"></i>8.6.1 The Bradley-Terry Model of Quasi-Symmetry</a></li>
+<li class="chapter" data-level="" data-path="Matched.html"><a href="Matched.html#example-ranking-men-tennis-players"><i class="fa fa-check"></i>8.6.2 Example: Ranking Men Tennis Players</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html"><i class="fa fa-check"></i>9 Marginal Modeling of Correlated, Clustered Responses</a><ul>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#marginal-models-vs-subject-specific-models"><i class="fa fa-check"></i>9.1 Marginal Models Vs Subject-Specific Models</a><ul>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#marginal-models-for-a-clustered-binary-response"><i class="fa fa-check"></i>9.1.1 Marginal Models for a Clustered Binary Response</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#x9.1.2"><i class="fa fa-check"></i>9.1.2 Example: Repeated Responses on Similar Survey Questions</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#subject-specific-models-for-a-repeated-response"><i class="fa fa-check"></i>9.1.3 Subject-Specific Models for a Repeated Response</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#marginal-modeling-the-generalized-estimating-equations-gee-approach"><i class="fa fa-check"></i>9.2 Marginal Modeling: The Generalized Estimating Equations (GEE) Approach</a><ul>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#quasi-likelihood-methods"><i class="fa fa-check"></i>9.2.1 Quasi-Likelihood Methods</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#generalized-estimating-equation-methodology-basic-ideas"><i class="fa fa-check"></i>9.2.2 Generalized Estimating Equation Methodology: Basic Ideas</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#x9.2.3"><i class="fa fa-check"></i>9.2.3 Example: Opinion about Legalized Abortion Revisited</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#limitations-of-gee-compared-to-ml"><i class="fa fa-check"></i>9.2.4 Limitations of GEE Compared to ML</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#marginal-modeling-for-clustered-multinomial-responses"><i class="fa fa-check"></i>9.3 Marginal Modeling for Clustered Multinomial Responses</a><ul>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#x9.3.1"><i class="fa fa-check"></i>9.3.1 Example: Insomnia Study</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#alternative-gee-specification-of-working-association"><i class="fa fa-check"></i>9.3.2 Alternative GEE Specification of Working Association</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#transitional-modeling-given-the-past"><i class="fa fa-check"></i>9.4 Transitional Modeling, Given the Past</a><ul>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#transitional-models-with-explanatory-variables"><i class="fa fa-check"></i>9.4.1 Transitional Models with Explanatory Variables</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#example-respiratory-illness-and-maternal-smoking"><i class="fa fa-check"></i>9.4.2 Example: Respiratory Illness and Maternal Smoking</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#x9.4.3"><i class="fa fa-check"></i>9.4.3 Group Comparisons Treating Initial Response as Covariate</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#dealing-with-missing-data"><i class="fa fa-check"></i>9.5 Dealing with Missing Data *</a><ul>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#missing-at-random-impact-on-ml-and-gee-methods"><i class="fa fa-check"></i>9.5.1 Missing at Random: Impact on ML and GEE Methods</a></li>
+<li class="chapter" data-level="" data-path="Marginal.html"><a href="Marginal.html#multiple-imputation-monte-carlo-prediction-of-missing-data"><i class="fa fa-check"></i>9.5.2 Multiple Imputation: Monte Carlo Prediction of missing Data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html"><i class="fa fa-check"></i>10 Random Effects: Generalized Linear Mixed Models</a><ul>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#random-effects-modeling-of-clustered-categorical-data"><i class="fa fa-check"></i>10.1 Random Effects Modeling of Clustered Categorical Data</a><ul>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#the-generalized-linear-mixed-model-glmm"><i class="fa fa-check"></i>10.1.1 The Generalized Linear Mixed Model (GLMM)</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#a-logistic-glmm-for-binary-matched-pairs"><i class="fa fa-check"></i>10.1.2 A Logistic GLMM for Binary Matched Pairs</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-environmental-opinions-revised"><i class="fa fa-check"></i>10.1.3 Example: Environmental Opinions Revised</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#differing-effects-in-glmms-and-marginal-models"><i class="fa fa-check"></i>10.1.4 Differing Effects in GLMMs and Marginal Models</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#model-fitting-for-glmms"><i class="fa fa-check"></i>10.1.5 Model Fitting for GLMMs</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#inference-for-model-parameters-and-prediction"><i class="fa fa-check"></i>10.1.6 Inference for Model Parameters and Prediction</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#examples-random-effects-models-for-binary-data"><i class="fa fa-check"></i>10.2 Examples: Random Effects Models for Binary Data</a><ul>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#small-area-estimation-of-binomial-probabilities"><i class="fa fa-check"></i>10.2.1 Small-Area Estimation of Binomial Probabilities</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-estimating-basketball-free-throw-success"><i class="fa fa-check"></i>10.2.2 Example: Estimating Basketball Free Throw Success</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-opinions-about-legalizing-abortion-revised"><i class="fa fa-check"></i>10.2.3 Example: Opinions about Legalizing Abortion Revised</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#item-response-models-the-rasch-model"><i class="fa fa-check"></i>10.2.4 Item Response Models: The Rasch Model</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#choice-of-marginal-model-or-random-effects-model"><i class="fa fa-check"></i>10.2.5 Choice of Marginal Model or Random Effects Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#extensions-to-multinomial-responses-and-multiple-random-effect-terms"><i class="fa fa-check"></i>10.3 Extensions to Multinomial Responses and Multiple Random Effect Terms</a><ul>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-insomnia-study-revisited"><i class="fa fa-check"></i>10.3.1 Example: Insomnia Study Revisited</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#meta-analysis-bivariate-random-effects-for-association-heterogeneity"><i class="fa fa-check"></i>10.3.2 Meta-Analysis: Bivariate Random Effects for Association Heterogeneity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#multilevel-hierarchical-models"><i class="fa fa-check"></i>10.4 Multilevel (Hierarchical) Models</a><ul>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-two-level-model-for-student-performance"><i class="fa fa-check"></i>10.4.1 Example: Two-Level Model for Student Performance</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-smoking-prevention-and-cessation-study"><i class="fa fa-check"></i>10.4.2 Example: Smoking Prevention and Cessation Study</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#latent-class-models"><i class="fa fa-check"></i>10.5 Latent Class Models *</a><ul>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#independence-given-a-latent-categorical-variable"><i class="fa fa-check"></i>10.5.1 Independence Given a Latent Categorical Variable</a></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#example-latent-class-model-for-rater-agreement"><i class="fa fa-check"></i>10.5.2 Example: Latent Class Model for Rater Agreement</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Random.html"><a href="Random.html#exercises-2"><i class="fa fa-check"></i>Exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html"><i class="fa fa-check"></i>11 Classification and Smoothing</a><ul>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#classification-linear-discrinant-analysis"><i class="fa fa-check"></i>11.1 Classification: Linear Discrinant Analysis</a><ul>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#classification-with-fishers-linear-discriminant-function"><i class="fa fa-check"></i>11.1.1 Classification with Fisher’s Linear Discriminant Function</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#example-horseshoe-crab-satellites-revisited-1"><i class="fa fa-check"></i>11.1.2 Example: Horseshoe Crab Satellites Revisited</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#discriminant-analysis-versus-logistic-regression"><i class="fa fa-check"></i>11.1.3 Discriminant Analysis Versus Logistic Regression</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#classification-tree-based-prediction"><i class="fa fa-check"></i>11.2 Classification: Tree-Based Prediction</a><ul>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#classification-trees"><i class="fa fa-check"></i>11.2.1 Classification Trees</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#example-a-classification-tree-for-horseshoe-crab-mating"><i class="fa fa-check"></i>11.2.2 Example: A classification Tree for Horseshoe Crab Mating</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#how-does-the-classification-tree-grow"><i class="fa fa-check"></i>11.2.3 How Does the Classification Tree Grow?</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#pruning-a-tree-and-checking-prediction-accuracy"><i class="fa fa-check"></i>11.2.4 Pruning a Tree and Checking Prediction Accuracy</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#classification-trees-versus-logistic-regression-and-discriminant-analysis"><i class="fa fa-check"></i>11.2.5 Classification Trees Versus Logistic Regression and Discriminant Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#cluster-analysis-for-categorical-responses"><i class="fa fa-check"></i>11.3 Cluster Analysis for Categorical Responses</a><ul>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#measuring-dissimilarity-between-observations"><i class="fa fa-check"></i>11.3.1 Measuring Dissimilarity Between Observations</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#hierarchical-clustering-algorithm-and-dendrograms"><i class="fa fa-check"></i>11.3.2 Hierarchical Clustering Algorithm and Dendrograms</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#example-clustering-states-on-presidential-elections"><i class="fa fa-check"></i>11.3.3 Example: Clustering States on Presidential Elections</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#smoothing-generalized-additive-models"><i class="fa fa-check"></i>11.4 Smoothing: Generalized Additive Models</a><ul>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#generalized-additive-models"><i class="fa fa-check"></i>11.4.1 Generalized Additive Models</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#example-gams-for-horseshoe-crab-data"><i class="fa fa-check"></i>11.4.2 Example: GAMs for Horseshoe Crab Data</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#how-much-smoothing-the-biasvariance-tradeoff"><i class="fa fa-check"></i>11.4.3 How Much Smoothing? The Bias/Variance Tradeoff</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#example-smoothing-to-portray-probability-of-kyphosis"><i class="fa fa-check"></i>11.4.4 Example: Smoothing to Portray Probability of Kyphosis</a></li>
+</ul></li>
+<li><a href="Classification.html#regularization-for-high-dimensional-categorical-data-large-p">11.5 Regularization for High-Dimensional Categorical Data (Large <em>p</em>)</a><ul>
+<li><a href="Classification.html#penalized-likelihood-methods-and-l_q-norm-smoothing">11.5.1 Penalized-Likelihood Methods and <span class="math inline">\(L_q\)</span>-Norm Smoothing</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#implementing-the-lasso"><i class="fa fa-check"></i>11.5.2 Implementing the Lasso</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#example-predicting-option-on-abortion-with-student-survey"><i class="fa fa-check"></i>11.5.3 Example: Predicting Option on Abortion with Student Survey</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#why-shrink-ml-estimates-toward-0"><i class="fa fa-check"></i>11.5.4 Why Shrink ML Estimates Toward 0?</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#issues-in-variable-selection-dimension-reduction"><i class="fa fa-check"></i>11.5.5 Issues In variable Selection (Dimension Reduction)</a></li>
+<li class="chapter" data-level="" data-path="Classification.html"><a href="Classification.html#controlling-the-false-discovery-rate"><i class="fa fa-check"></i>11.5.6 Controlling the False Discovery Rate</a></li>
+<li><a href="Classification.html#large-p-also-makes-bayesian-inference-challenging">11.5.7 Large <span class="math inline">\(p\)</span> also Makes Bayesian Inference Challenging</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html"><i class="fa fa-check"></i>99 R Markdown</a><ul>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#formatting"><i class="fa fa-check"></i>Formatting</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#symbols"><i class="fa fa-check"></i>Symbols</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#markdown-highlighting"><i class="fa fa-check"></i>Markdown highlighting</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#text-coloring"><i class="fa fa-check"></i>Text coloring</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#equations"><i class="fa fa-check"></i>Equations</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#x99.4"><i class="fa fa-check"></i>Section references</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#footnotes"><i class="fa fa-check"></i>Footnotes</a></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#displaying-formula"><i class="fa fa-check"></i>Displaying Formula</a><ul>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#notation"><i class="fa fa-check"></i>Notation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="rmarkdown.html"><a href="rmarkdown.html#greek-letters"><i class="fa fa-check"></i>Greek letters</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Notes for Agresti’s Introduction to Categorical Data Analysis 3rd Edition</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="Random" class="section level1">
+<h1>10 Random Effects: Generalized Linear Mixed Models</h1>
+<div id="random-effects-modeling-of-clustered-categorical-data" class="section level2">
+<h2>10.1 Random Effects Modeling of Clustered Categorical Data</h2>
+<div id="the-generalized-linear-mixed-model-glmm" class="section level3">
+<h3>10.1.1 The Generalized Linear Mixed Model (GLMM)</h3>
+<p><span class="math display" id="eq:eq101">\[\begin{equation} 
+  g(u_{it}) = u_i + \alpha + \beta_1 x_{it1}+ \dots + \beta_p x_{itp},\ i = 1, \dots, n,\ t = 1, \dots, T.
+  \tag{26}
+\end{equation}\]</span></p>
+</div>
+<div id="a-logistic-glmm-for-binary-matched-pairs" class="section level3">
+<h3>10.1.2 A Logistic GLMM for Binary Matched Pairs</h3>
+<p><span class="math display" id="eq:eq102">\[\begin{equation} 
+  \mathrm{logit}[P(Y_{i1}= 1)] = u_i + \alpha + \beta,\ \ \mathrm{logit}[P(Y_{i2}= 1)] = u_i + \alpha
+  \tag{27}
+\end{equation}\]</span></p>
+</div>
+<div id="example-environmental-opinions-revised" class="section level3">
+<h3>10.1.3 Example: Environmental Opinions Revised</h3>
+<div class="sourceCode" id="cb606"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb606-1"><a href="Random.html#cb606-1"></a>Opinions &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Envir_opinions.dat&quot;</span>,</span>
+<span id="cb606-2"><a href="Random.html#cb606-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb606-3"><a href="Random.html#cb606-3"></a><span class="co"># Make contingency table</span></span>
+<span id="cb606-4"><a href="Random.html#cb606-4"></a>tab &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">addmargins</span>(<span class="kw">xtabs</span>(<span class="op">~</span>y1 <span class="op">+</span><span class="st"> </span>y2, <span class="dt">data =</span> Opinions)))</span>
+<span id="cb606-5"><a href="Random.html#cb606-5"></a></span>
+<span id="cb606-6"><a href="Random.html#cb606-6"></a><span class="kw">library</span>(tibble)</span>
+<span id="cb606-7"><a href="Random.html#cb606-7"></a><span class="co"># Add label as the first column and variable names</span></span>
+<span id="cb606-8"><a href="Random.html#cb606-8"></a><span class="st">`</span><span class="dt">Table 10.1</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="st">`</span><span class="dt">Pay Higher Taxes</span><span class="st">`</span> =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>, <span class="st">&quot;Total&quot;</span>), </span>
+<span id="cb606-9"><a href="Random.html#cb606-9"></a>                      <span class="dt">Yes =</span> tab[,<span class="dv">1</span>], <span class="dt">No =</span> tab[,<span class="dv">2</span>], <span class="dt">Total =</span> tab[,<span class="dv">3</span>])</span>
+<span id="cb606-10"><a href="Random.html#cb606-10"></a></span>
+<span id="cb606-11"><a href="Random.html#cb606-11"></a></span>
+<span id="cb606-12"><a href="Random.html#cb606-12"></a><span class="kw">library</span>(flextable)</span>
+<span id="cb606-13"><a href="Random.html#cb606-13"></a>my_header &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb606-14"><a href="Random.html#cb606-14"></a>  <span class="dt">col_keys =</span> <span class="kw">colnames</span>(<span class="st">`</span><span class="dt">Table 10.1</span><span class="st">`</span>),</span>
+<span id="cb606-15"><a href="Random.html#cb606-15"></a>  <span class="dt">line1 =</span> <span class="kw">c</span>(<span class="st">&quot;Pay Higher Taxes&quot;</span>, <span class="kw">rep</span>(<span class="st">&quot;Cut Living Standards&quot;</span>, <span class="dv">2</span>), <span class="st">&quot;Total&quot;</span>),</span>
+<span id="cb606-16"><a href="Random.html#cb606-16"></a>  <span class="dt">line2 =</span> <span class="kw">colnames</span>(<span class="st">`</span><span class="dt">Table 10.1</span><span class="st">`</span>)</span>
+<span id="cb606-17"><a href="Random.html#cb606-17"></a>)</span>
+<span id="cb606-18"><a href="Random.html#cb606-18"></a></span>
+<span id="cb606-19"><a href="Random.html#cb606-19"></a><span class="kw">flextable</span>(<span class="st">`</span><span class="dt">Table 10.1</span><span class="st">`</span>, <span class="dt">col_keys =</span> my_header<span class="op">$</span>col_keys) <span class="op">%&gt;%</span></span>
+<span id="cb606-20"><a href="Random.html#cb606-20"></a><span class="st">  </span><span class="kw">set_header_df</span>(</span>
+<span id="cb606-21"><a href="Random.html#cb606-21"></a>    <span class="dt">mapping =</span> my_header,</span>
+<span id="cb606-22"><a href="Random.html#cb606-22"></a>    <span class="dt">key =</span> <span class="st">&quot;col_keys&quot;</span></span>
+<span id="cb606-23"><a href="Random.html#cb606-23"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-24"><a href="Random.html#cb606-24"></a><span class="st">  </span><span class="kw">theme_booktabs</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-25"><a href="Random.html#cb606-25"></a><span class="st">  </span><span class="kw">autofit</span>(<span class="dt">part =</span> <span class="st">&quot;all&quot;</span>) <span class="op">%&gt;%</span><span class="st">    </span></span>
+<span id="cb606-26"><a href="Random.html#cb606-26"></a><span class="st">  </span><span class="kw">align</span>(<span class="dt">align =</span> <span class="st">&quot;center&quot;</span>, <span class="dt">part =</span> <span class="st">&quot;all&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-27"><a href="Random.html#cb606-27"></a><span class="st">  </span><span class="kw">merge_h</span>(<span class="dt">part =</span> <span class="st">&quot;header&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-28"><a href="Random.html#cb606-28"></a><span class="st">  </span><span class="kw">merge_v</span>(<span class="dt">part =</span> <span class="st">&quot;header&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-29"><a href="Random.html#cb606-29"></a><span class="st">  </span><span class="kw">merge_h</span>(<span class="dt">part =</span> <span class="st">&quot;body&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-30"><a href="Random.html#cb606-30"></a><span class="st">  </span><span class="kw">merge_v</span>(<span class="dt">part =</span> <span class="st">&quot;body&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb606-31"><a href="Random.html#cb606-31"></a><span class="st">  </span><span class="kw">align_nottext_col</span>(<span class="dt">align =</span> <span class="st">&quot;center&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb606-32"><a href="Random.html#cb606-32"></a><span class="st">  </span><span class="kw">set_caption</span>(<span class="dt">caption =</span> <span class="st">&quot;Opinions relating to the environment&quot;</span>) </span></code></pre></div>
+<template id="547d9143-7de9-437d-b691-d06ea7e002cc"><style>
+.tabwid table{
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-7d5b7870{border-collapse:collapse;}.cl-7d56ec24{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-7d56f78c{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;}.cl-7d5718f2{width:43pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571910{width:117pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571911{width:103pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d57191a{width:103pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571924{width:43pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d57192e{width:117pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d57192f{width:117pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571938{width:103pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571942{width:43pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d57194c{width:117pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571956{width:103pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571960{width:43pt;background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d57196a{width:117pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d57196b{width:103pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7d571974{width:43pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-7d5b7870'>
+<caption class="Table Caption">
+<span id="tab:unnamed-chunk-120">Table 11: </span>Opinions relating to the environment
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td  rowspan="2"class="cl-7d571956"><p class="cl-7d56f78c"><span class="cl-7d56ec24">Pay Higher Taxes</span></p></td><td  colspan="2"class="cl-7d57194c"><p class="cl-7d56f78c"><span class="cl-7d56ec24">Cut Living Standards</span></p></td><td  rowspan="2"class="cl-7d571960"><p class="cl-7d56f78c"><span class="cl-7d56ec24">Total</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7d57196a"><p class="cl-7d56f78c"><span class="cl-7d56ec24">Yes</span></p></td><td class="cl-7d57196a"><p class="cl-7d56f78c"><span class="cl-7d56ec24">No</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-7d571911"><p class="cl-7d56f78c"><span class="cl-7d56ec24">Yes</span></p></td><td class="cl-7d571910"><p class="cl-7d56f78c"><span class="cl-7d56ec24">227</span></p></td><td class="cl-7d571910"><p class="cl-7d56f78c"><span class="cl-7d56ec24">132</span></p></td><td class="cl-7d5718f2"><p class="cl-7d56f78c"><span class="cl-7d56ec24">359</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7d57191a"><p class="cl-7d56f78c"><span class="cl-7d56ec24">No</span></p></td><td class="cl-7d57192e"><p class="cl-7d56f78c"><span class="cl-7d56ec24">107</span></p></td><td class="cl-7d57192e"><p class="cl-7d56f78c"><span class="cl-7d56ec24">678</span></p></td><td class="cl-7d571924"><p class="cl-7d56f78c"><span class="cl-7d56ec24">785</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7d571938"><p class="cl-7d56f78c"><span class="cl-7d56ec24">Total</span></p></td><td class="cl-7d57192f"><p class="cl-7d56f78c"><span class="cl-7d56ec24">334</span></p></td><td class="cl-7d57192f"><p class="cl-7d56f78c"><span class="cl-7d56ec24">810</span></p></td><td class="cl-7d571942"><p class="cl-7d56f78c"><span class="cl-7d56ec24">1,144</span></p></td></tr></tbody></table></div></template>
+<div id="66c26eee-6f44-4cac-af93-57ce3d062ce2"></div>
+<script>
+var dest = document.getElementById("66c26eee-6f44-4cac-af93-57ce3d062ce2");
+var template = document.getElementById("547d9143-7de9-437d-b691-d06ea7e002cc");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;"
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+fantome.appendChild(templateContent);
+</script>
+
+<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb607-1"><a href="Random.html#cb607-1"></a>Opinions &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Opinions.dat&quot;</span>,</span>
+<span id="cb607-2"><a href="Random.html#cb607-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb607-3"><a href="Random.html#cb607-3"></a></span>
+<span id="cb607-4"><a href="Random.html#cb607-4"></a>Opinions <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb607-5"><a href="Random.html#cb607-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="kw">n</span>()<span class="op">-</span><span class="dv">1</span>, <span class="kw">n</span>())) </span></code></pre></div>
+<pre class="custom-output"><code>  person question y
+1      1        1 1
+2      1        0 1
+3   1144        1 0
+4   1144        0 0</code></pre>
+<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb609-1"><a href="Random.html#cb609-1"></a><span class="co"># library(lme4)</span></span>
+<span id="cb609-2"><a href="Random.html#cb609-2"></a><span class="co"># fit GLMM by adaptive Gaussian quadrature, </span></span>
+<span id="cb609-3"><a href="Random.html#cb609-3"></a><span class="co"># with nAGQ quadrature points, as 10.1.5 explains </span></span>
+<span id="cb609-4"><a href="Random.html#cb609-4"></a><span class="co"># (1|person) is random intercept for person</span></span>
+<span id="cb609-5"><a href="Random.html#cb609-5"></a>fit &lt;-<span class="st"> </span>lme4<span class="op">::</span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>person) <span class="op">+</span><span class="st"> </span>question, <span class="dt">family =</span> binomial, <span class="dt">nAGQ =</span> <span class="dv">50</span>, </span>
+<span id="cb609-6"><a href="Random.html#cb609-6"></a>                   <span class="dt">data =</span> Opinions)</span></code></pre></div>
+<pre><code>Registered S3 methods overwritten by &#39;lme4&#39;:
+  method                          from
+  cooks.distance.influence.merMod car 
+  influence.merMod                car 
+  dfbeta.influence.merMod         car 
+  dfbetas.influence.merMod        car </code></pre>
+<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb611-1"><a href="Random.html#cb611-1"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre class="custom-output"><code>Generalized linear mixed model fit by maximum likelihood (Adaptive
+  Gauss-Hermite Quadrature, nAGQ = 50) [glmerMod]
+ Family: binomial  ( logit )
+Formula: y ~ (1 | person) + question
+   Data: Opinions
+
+     AIC      BIC   logLik deviance df.resid 
+  2526.8   2544.0  -1260.4   2520.8     2285 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.8872 -0.2691 -0.2423  0.4646  1.2519 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ person (Intercept) 8.143    2.854   
+Number of obs: 2288, groups:  person, 1144
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -1.8343     0.1624 -11.295   &lt;2e-16 ***
+question      0.2100     0.1301   1.614    0.106    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Correlation of Fixed Effects:
+         (Intr)
+question -0.452</code></pre>
+</div>
+<div id="differing-effects-in-glmms-and-marginal-models" class="section level3">
+<h3>10.1.4 Differing Effects in GLMMs and Marginal Models</h3>
+</div>
+<div id="model-fitting-for-glmms" class="section level3">
+<h3>10.1.5 Model Fitting for GLMMs</h3>
+</div>
+<div id="inference-for-model-parameters-and-prediction" class="section level3">
+<h3>10.1.6 Inference for Model Parameters and Prediction</h3>
+</div>
+</div>
+<div id="examples-random-effects-models-for-binary-data" class="section level2">
+<h2>10.2 Examples: Random Effects Models for Binary Data</h2>
+<div id="small-area-estimation-of-binomial-probabilities" class="section level3">
+<h3>10.2.1 Small-Area Estimation of Binomial Probabilities</h3>
+<p><span class="math display" id="eq:eq103">\[\begin{equation} 
+  \mathrm{logit}[P(Y_{it} = 1)] = \mathrm{logit}(\pi_i) = u_i + \alpha,
+  \tag{28}
+\end{equation}\]</span></p>
+</div>
+<div id="example-estimating-basketball-free-throw-success" class="section level3">
+<h3>10.2.2 Example: Estimating Basketball Free Throw Success</h3>
+<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="Random.html#cb613-1"></a>FreeThrow &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/FreeThrow.dat&quot;</span>,</span>
+<span id="cb613-2"><a href="Random.html#cb613-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb613-3"><a href="Random.html#cb613-3"></a></span>
+<span id="cb613-4"><a href="Random.html#cb613-4"></a>FreeThrow <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb613-5"><a href="Random.html#cb613-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">n</span>()))  </span></code></pre></div>
+<pre class="custom-output"><code>    player  y  T
+1  Davis.A 32 39
+2 Gobert.R 11 14</code></pre>
+<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb615-1"><a href="Random.html#cb615-1"></a><span class="kw">library</span>(lme4)</span></code></pre></div>
+<pre><code>Loading required package: Matrix</code></pre>
+<pre><code>
+Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:tidyr&#39;:
+
+    expand, pack, unpack</code></pre>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="Random.html#cb619-1"></a><span class="co"># (1|player) = random intercepts for each player</span></span>
+<span id="cb619-2"><a href="Random.html#cb619-2"></a><span class="co"># nAGQ = number of points for adaptive Gaussian quadrature</span></span>
+<span id="cb619-3"><a href="Random.html#cb619-3"></a>fit &lt;-<span class="st"> </span></span>
+<span id="cb619-4"><a href="Random.html#cb619-4"></a><span class="st">  </span><span class="kw">glmer</span>(y<span class="op">/</span>T <span class="op">~</span><span class="st"> </span><span class="dv">1</span> <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>player), <span class="dt">family=</span>binomial, <span class="dt">weights =</span> T, <span class="dt">nAGQ=</span> <span class="dv">100</span>,</span>
+<span id="cb619-5"><a href="Random.html#cb619-5"></a>              <span class="dt">data =</span> FreeThrow)</span>
+<span id="cb619-6"><a href="Random.html#cb619-6"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre class="custom-output"><code>Generalized linear mixed model fit by maximum likelihood (Adaptive
+  Gauss-Hermite Quadrature, nAGQ = 100) [glmerMod]
+ Family: binomial  ( logit )
+Formula: y/T ~ 1 + (1 | player)
+   Data: FreeThrow
+Weights: T
+
+     AIC      BIC   logLik deviance df.resid 
+    33.8     35.7    -14.9     29.8       18 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.5111 -0.6988  0.1050  0.5467  1.3008 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ player (Intercept) 0.1807   0.4251  
+Number of obs: 20, groups:  player, 20
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)    1.174      0.181   6.484 8.95e-11 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb621-1"><a href="Random.html#cb621-1"></a><span class="kw">fitted</span>(fit)  <span class="co"># estimated prob&#39;s for 20 players using predicted random effects</span></span></code></pre></div>
+<pre class="custom-output"><code>        1         2         3         4         5         6         7         8 
+0.7948554 0.7709709 0.6592042 0.7654111 0.7929072 0.7921630 0.7235316 0.7829412 
+        9        10        11        12        13        14        15        16 
+0.7110775 0.6664667 0.8087839 0.7550424 0.8005694 0.8053209 0.7341520 0.8087839 
+       17        18        19        20 
+0.7475986 0.7341520 0.7726096 0.7706175 </code></pre>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="Random.html#cb623-1"></a>season &lt;-<span class="st">  </span><span class="kw">c</span>(<span class="fl">0.80</span>, <span class="fl">0.77</span>, <span class="fl">0.63</span>, <span class="fl">0.81</span>, <span class="fl">0.84</span>, <span class="fl">0.81</span>, <span class="fl">0.83</span>, <span class="fl">0.78</span>, <span class="fl">0.57</span>, <span class="fl">0.39</span>, </span>
+<span id="cb623-2"><a href="Random.html#cb623-2"></a>             <span class="fl">0.81</span>, <span class="fl">0.82</span>, <span class="fl">0.81</span>, <span class="fl">0.61</span>, <span class="fl">0.79</span>, <span class="fl">0.74</span>, <span class="fl">0.80</span>, <span class="fl">0.67</span>, <span class="fl">0.77</span>, <span class="fl">0.65</span>)</span>
+<span id="cb623-3"><a href="Random.html#cb623-3"></a></span>
+<span id="cb623-4"><a href="Random.html#cb623-4"></a><span class="st">`</span><span class="dt">Table 10.2</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(<span class="dt">Player =</span> <span class="kw">word</span>(FreeThrow<span class="op">$</span>player, <span class="dv">1</span>, <span class="dt">sep =</span> <span class="kw">fixed</span>(<span class="st">&quot;.&quot;</span>)), <span class="dt">T_i =</span> FreeThrow<span class="op">$</span>T, </span>
+<span id="cb623-5"><a href="Random.html#cb623-5"></a>                          <span class="dt">p_i =</span> <span class="kw">round</span>(FreeThrow<span class="op">$</span>y<span class="op">/</span><span class="st"> </span>FreeThrow<span class="op">$</span>T, <span class="dv">2</span>), </span>
+<span id="cb623-6"><a href="Random.html#cb623-6"></a>                          <span class="dt">hat_pi_i =</span> <span class="kw">round</span>(<span class="kw">fitted</span>(fit), <span class="dv">2</span>), <span class="dt">pi_i =</span> season) </span>
+<span id="cb623-7"><a href="Random.html#cb623-7"></a></span>
+<span id="cb623-8"><a href="Random.html#cb623-8"></a></span>
+<span id="cb623-9"><a href="Random.html#cb623-9"></a><span class="kw">library</span>(flextable)</span>
+<span id="cb623-10"><a href="Random.html#cb623-10"></a><span class="kw">flextable</span>(<span class="st">`</span><span class="dt">Table 10.2</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-11"><a href="Random.html#cb623-11"></a><span class="st">  </span><span class="kw">theme_booktabs</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-12"><a href="Random.html#cb623-12"></a><span class="st">  </span><span class="kw">fix_border_issues</span>()  <span class="op">%&gt;%</span></span>
+<span id="cb623-13"><a href="Random.html#cb623-13"></a><span class="st">  </span><span class="kw">set_caption</span>(<span class="dt">caption =</span> <span class="st">&quot;Estimates of probability of making a free throw, based on data from centers from week 1 of an NBA season.&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-14"><a href="Random.html#cb623-14"></a><span class="st">    </span><span class="kw">set_table_properties</span>(<span class="dt">width =</span> <span class="fl">.5</span>, <span class="dt">layout =</span> <span class="st">&quot;autofit&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-15"><a href="Random.html#cb623-15"></a><span class="st">  </span>flextable<span class="op">::</span><span class="kw">compose</span>(<span class="dt">part =</span> <span class="st">&quot;header&quot;</span>, <span class="dt">j =</span> <span class="st">&quot;T_i&quot;</span>,</span>
+<span id="cb623-16"><a href="Random.html#cb623-16"></a>                     <span class="dt">value =</span> <span class="kw">as_paragraph</span>(<span class="st">&quot;T&quot;</span>, <span class="kw">as_sub</span>(<span class="st">&quot;i&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-17"><a href="Random.html#cb623-17"></a><span class="st">  </span>flextable<span class="op">::</span><span class="kw">compose</span>(<span class="dt">part =</span> <span class="st">&quot;header&quot;</span>, <span class="dt">j =</span> <span class="st">&quot;p_i&quot;</span>, </span>
+<span id="cb623-18"><a href="Random.html#cb623-18"></a>                     <span class="dt">value =</span> <span class="kw">as_paragraph</span>(<span class="st">&quot;p&quot;</span>, <span class="kw">as_sub</span>(<span class="st">&quot;i&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-19"><a href="Random.html#cb623-19"></a><span class="st">  </span>flextable<span class="op">::</span><span class="kw">compose</span>(<span class="dt">part =</span> <span class="st">&quot;header&quot;</span>, <span class="dt">j =</span> <span class="st">&quot;hat_pi_i&quot;</span>, </span>
+<span id="cb623-20"><a href="Random.html#cb623-20"></a>                     <span class="dt">value =</span> <span class="kw">as_paragraph</span>(<span class="st">&quot;\U1D70B\U0302&quot;</span>, <span class="kw">as_sub</span>(<span class="st">&quot;i&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb623-21"><a href="Random.html#cb623-21"></a><span class="st">  </span>flextable<span class="op">::</span><span class="kw">compose</span>(<span class="dt">part =</span> <span class="st">&quot;header&quot;</span>, <span class="dt">j =</span> <span class="st">&quot;pi_i&quot;</span>, </span>
+<span id="cb623-22"><a href="Random.html#cb623-22"></a>                     <span class="dt">value =</span> <span class="kw">as_paragraph</span>(<span class="st">&quot;\U1D70B&quot;</span>, <span class="kw">as_sub</span>(<span class="st">&quot;i&quot;</span>))) </span></code></pre></div>
+<template id="0904a060-7f89-41b1-a2dd-4c83dfbe70ec"><style>
+.tabwid table{
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-7ebbc724{table-layout:auto;border-collapse:collapse;width:50%;}.cl-7eb6db1a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-7eb6db2e{font-family:'Helvetica';font-size:7pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;position: relative;top:3pt;}.cl-7eb6e6fa{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;}.cl-7eb6e718{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;}.cl-7eb72584{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7eb725a2{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7eb725ac{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7eb725ad{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7eb725b6{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-7eb725c0{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-7ebbc724'>
+<caption class="Table Caption">
+<span id="tab:unnamed-chunk-123">Table 12: </span>Estimates of probability of making a free throw, based on data from centers from week 1 of an NBA season.
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-7eb725c0"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Player</span></p></td><td class="cl-7eb725b6"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">T</span><span class="cl-7eb6db2e">i</span></p></td><td class="cl-7eb725b6"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">p</span><span class="cl-7eb6db2e">i</span></p></td><td class="cl-7eb725b6"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">𝜋̂</span><span class="cl-7eb6db2e">i</span></p></td><td class="cl-7eb725b6"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">𝜋</span><span class="cl-7eb6db2e">i</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Davis</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">39</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.82</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.79</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.80</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Cousins</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">49</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.78</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Whiteside</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">21</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.52</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.66</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.63</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Turner</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">13</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Gasol</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">19</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.84</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.79</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.84</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Valanciunas</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">14</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.86</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.79</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Towns</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">3</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.33</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.72</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.83</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Embiid</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">12</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.83</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.78</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.78</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Nurkic</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">19</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.63</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.71</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.57</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Drummond</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">16</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.50</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.67</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.39</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Lopez</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">13</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.92</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Jokic</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">3</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.67</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.76</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.82</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Dieng</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">6</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">1.00</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.80</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Adams</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">7</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">1.00</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.61</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Kanter</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">8</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.62</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.73</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.79</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Monroe</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">13</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.92</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.81</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.74</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Horford</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">6</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.67</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.75</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.80</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Vucevic</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">8</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.62</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.73</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.67</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725a2"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Muscala</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">10</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.80</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td><td class="cl-7eb72584"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-7eb725ad"><p class="cl-7eb6e6fa"><span class="cl-7eb6db1a">Gobert</span></p></td><td class="cl-7eb725ac"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">14</span></p></td><td class="cl-7eb725ac"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.79</span></p></td><td class="cl-7eb725ac"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.77</span></p></td><td class="cl-7eb725ac"><p class="cl-7eb6e718"><span class="cl-7eb6db1a">0.65</span></p></td></tr></tbody></table></div></template>
+<div id="889e2938-543d-42ce-b6e8-5f2804e91b49"></div>
+<script>
+var dest = document.getElementById("889e2938-543d-42ce-b6e8-5f2804e91b49");
+var template = document.getElementById("0904a060-7f89-41b1-a2dd-4c83dfbe70ec");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;"
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+fantome.appendChild(templateContent);
+</script>
+
+<div class="sourceCode" id="cb624"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb624-1"><a href="Random.html#cb624-1"></a><span class="co"># compose is also used by purrr (and igraph)</span></span>
+<span id="cb624-2"><a href="Random.html#cb624-2"></a><span class="co"># Unicode is a hat over the next character and U1D70B is pi</span></span></code></pre></div>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="Random.html#cb625-1"></a><span class="kw">summary</span>(<span class="kw">glm</span>(y<span class="op">/</span>T <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">family =</span> binomial, <span class="dt">weights =</span> T, <span class="dt">data =</span> FreeThrow))</span></code></pre></div>
+<pre class="custom-output"><code>
+Call:
+glm(formula = y/T ~ 1, family = binomial, data = FreeThrow, weights = T)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.3217  -0.8336   0.2710   0.9268   1.9710  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)   1.1400     0.1363   8.361   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 31.322  on 19  degrees of freedom
+Residual deviance: 31.322  on 19  degrees of freedom
+AIC: 81.032
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div id="example-opinions-about-legalizing-abortion-revised" class="section level3">
+<h3>10.2.3 Example: Opinions about Legalizing Abortion Revised</h3>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb627-1"><a href="Random.html#cb627-1"></a>Abortion &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Abortion.dat&quot;</span>,</span>
+<span id="cb627-2"><a href="Random.html#cb627-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb627-3"><a href="Random.html#cb627-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sit =</span> <span class="kw">factor</span>(situation, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>)))</span>
+<span id="cb627-4"><a href="Random.html#cb627-4"></a></span>
+<span id="cb627-5"><a href="Random.html#cb627-5"></a>Abortion <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb627-6"><a href="Random.html#cb627-6"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>, <span class="kw">n</span>()<span class="op">-</span><span class="dv">2</span>, <span class="kw">n</span>()<span class="op">-</span><span class="dv">1</span>, <span class="kw">n</span>()))  </span></code></pre></div>
+<pre class="custom-output"><code>  person gender situation response sit
+1      1      1         1        1   1
+2      1      1         2        1   2
+3      1      1         3        1   3
+4   1850      0         1        0   1
+5   1850      0         2        0   2
+6   1850      0         3        0   3</code></pre>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="Random.html#cb629-1"></a>fit &lt;-<span class="st"> </span></span>
+<span id="cb629-2"><a href="Random.html#cb629-2"></a><span class="st">  </span>lme4<span class="op">::</span><span class="kw">glmer</span>(response <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">|</span><span class="st"> </span>person) <span class="op">+</span><span class="st"> </span>sit <span class="op">+</span><span class="st"> </span>gender, <span class="dt">family =</span> binomial, </span>
+<span id="cb629-3"><a href="Random.html#cb629-3"></a>              <span class="dt">nAGQ =</span> <span class="dv">100</span>, <span class="dt">data =</span> Abortion)</span>
+<span id="cb629-4"><a href="Random.html#cb629-4"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre class="custom-output"><code>Generalized linear mixed model fit by maximum likelihood (Adaptive
+  Gauss-Hermite Quadrature, nAGQ = 100) [glmerMod]
+ Family: binomial  ( logit )
+Formula: response ~ (1 | person) + sit + gender
+   Data: Abortion
+
+     AIC      BIC   logLik deviance df.resid 
+  4588.5   4621.6  -2289.3   4578.5     5545 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7810 -0.1223 -0.1055  0.1396  1.7149 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ person (Intercept) 76.49    8.746   
+Number of obs: 5550, groups:  person, 1850
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -0.61937    0.37816  -1.638    0.101    
+sit1         0.83478    0.16007   5.215 1.84e-07 ***
+sit2         0.29245    0.15670   1.866    0.062 .  
+gender       0.01262    0.48970   0.026    0.979    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Correlation of Fixed Effects:
+       (Intr) sit1   sit2  
+sit1   -0.218              
+sit2   -0.211  0.508       
+gender -0.725  0.000  0.000</code></pre>
+</div>
+<div id="item-response-models-the-rasch-model" class="section level3">
+<h3>10.2.4 Item Response Models: The Rasch Model</h3>
+</div>
+<div id="choice-of-marginal-model-or-random-effects-model" class="section level3">
+<h3>10.2.5 Choice of Marginal Model or Random Effects Model</h3>
+</div>
+</div>
+<div id="extensions-to-multinomial-responses-and-multiple-random-effect-terms" class="section level2">
+<h2>10.3 Extensions to Multinomial Responses and Multiple Random Effect Terms</h2>
+<div id="example-insomnia-study-revisited" class="section level3">
+<h3>10.3.1 Example: Insomnia Study Revisited</h3>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="Random.html#cb631-1"></a>Insomnia &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Insomnia.dat&quot;</span>,</span>
+<span id="cb631-2"><a href="Random.html#cb631-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb631-3"><a href="Random.html#cb631-3"></a></span>
+<span id="cb631-4"><a href="Random.html#cb631-4"></a>Insomnia <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb631-5"><a href="Random.html#cb631-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="kw">n</span>()<span class="op">-</span><span class="dv">1</span>, <span class="kw">n</span>()))  </span></code></pre></div>
+<pre class="custom-output"><code>  case treat occasion response
+1    1     1        0        1
+2    1     1        1        1
+3  127     0        0        4
+4  127     0        1        4</code></pre>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="Random.html#cb633-1"></a><span class="co"># response var. from clmm must be a factor</span></span>
+<span id="cb633-2"><a href="Random.html#cb633-2"></a>fit &lt;-<span class="st"> </span></span>
+<span id="cb633-3"><a href="Random.html#cb633-3"></a><span class="st">  </span>ordinal<span class="op">::</span><span class="kw">clmm</span>(<span class="kw">factor</span>(response) <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>case) <span class="op">+</span><span class="st"> </span>occasion <span class="op">+</span><span class="st"> </span>treat <span class="op">+</span><span class="st"> </span>occasion<span class="op">:</span>treat,</span>
+<span id="cb633-4"><a href="Random.html#cb633-4"></a>                <span class="dt">nAGQ =</span> <span class="dv">20</span>, <span class="dt">data =</span> Insomnia)  </span>
+<span id="cb633-5"><a href="Random.html#cb633-5"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre class="custom-output"><code>Cumulative Link Mixed Model fitted with the adaptive Gauss-Hermite 
+quadrature approximation with 20 quadrature points 
+
+formula: factor(response) ~ (1 | case) + occasion + treat + occasion:treat
+data:    Insomnia
+
+ link  threshold nobs logLik  AIC     niter     max.grad cond.H 
+ logit flexible  478  -592.97 1199.94 401(1549) 8.28e-05 6.1e+01
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ case   (Intercept) 3.628    1.905   
+Number of groups:  case 239 
+
+Coefficients:
+               Estimate Std. Error z value Pr(&gt;|z|)    
+occasion       -1.60158    0.28336  -5.652 1.59e-08 ***
+treat          -0.05785    0.36630  -0.158  0.87450    
+occasion:treat -1.08129    0.38046  -2.842  0.00448 ** 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Threshold coefficients:
+    Estimate Std. Error z value
+1|2  -3.4896     0.3588  -9.727
+2|3  -1.4846     0.2903  -5.114
+3|4   0.5613     0.2702   2.078</code></pre>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="Random.html#cb635-1"></a><span class="kw">library</span>(multgee)</span>
+<span id="cb635-2"><a href="Random.html#cb635-2"></a>fit_multgee &lt;-<span class="st"> </span></span>
+<span id="cb635-3"><a href="Random.html#cb635-3"></a><span class="st">  </span><span class="kw">ordLORgee</span>(response <span class="op">~</span><span class="st"> </span>occasion <span class="op">+</span><span class="st"> </span>treat <span class="op">+</span><span class="st"> </span>occasion<span class="op">:</span>treat, <span class="dt">id =</span> case,</span>
+<span id="cb635-4"><a href="Random.html#cb635-4"></a>                 <span class="dt">LORstr =</span> <span class="st">&quot;independence&quot;</span>, <span class="dt">data =</span> Insomnia)</span>
+<span id="cb635-5"><a href="Random.html#cb635-5"></a></span>
+<span id="cb635-6"><a href="Random.html#cb635-6"></a>fit_ordinal &lt;-<span class="st"> </span></span>
+<span id="cb635-7"><a href="Random.html#cb635-7"></a><span class="st">  </span>ordinal<span class="op">::</span><span class="kw">clmm</span>(<span class="kw">factor</span>(response) <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>case) <span class="op">+</span><span class="st"> </span>occasion <span class="op">+</span><span class="st"> </span>treat <span class="op">+</span><span class="st"> </span>occasion<span class="op">:</span>treat,</span>
+<span id="cb635-8"><a href="Random.html#cb635-8"></a>                <span class="dt">nAGQ =</span> <span class="dv">20</span>, <span class="dt">data =</span> Insomnia)</span>
+<span id="cb635-9"><a href="Random.html#cb635-9"></a></span>
+<span id="cb635-10"><a href="Random.html#cb635-10"></a><span class="st">`</span><span class="dt">Table 10.4</span><span class="st">`</span> &lt;-<span class="st"> </span></span>
+<span id="cb635-11"><a href="Random.html#cb635-11"></a><span class="st">  </span><span class="kw">data.frame</span>(<span class="dt">Effect =</span> <span class="kw">c</span>(<span class="st">&quot;Occasion&quot;</span>, <span class="st">&quot;Treatment&quot;</span>, <span class="st">&quot;Treatment x Occasion&quot;</span>),</span>
+<span id="cb635-12"><a href="Random.html#cb635-12"></a>             </span>
+<span id="cb635-13"><a href="Random.html#cb635-13"></a>             <span class="dt">mm_coef =</span> <span class="kw">c</span>(<span class="kw">coef</span>(fit_multgee)[<span class="st">&quot;occasion&quot;</span>],</span>
+<span id="cb635-14"><a href="Random.html#cb635-14"></a>                         <span class="kw">coef</span>(fit_multgee)[<span class="st">&quot;treat&quot;</span>],</span>
+<span id="cb635-15"><a href="Random.html#cb635-15"></a>                         <span class="kw">coef</span>(fit_multgee)[<span class="st">&quot;occasion:treat&quot;</span>]),</span>
+<span id="cb635-16"><a href="Random.html#cb635-16"></a>             <span class="dt">mm_se =</span> <span class="kw">c</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fit_multgee))[<span class="st">&quot;occasion&quot;</span>, <span class="st">&quot;san.se&quot;</span>],</span>
+<span id="cb635-17"><a href="Random.html#cb635-17"></a>                       <span class="kw">coef</span>(<span class="kw">summary</span>(fit_multgee))[<span class="st">&quot;treat&quot;</span>, <span class="st">&quot;san.se&quot;</span>],</span>
+<span id="cb635-18"><a href="Random.html#cb635-18"></a>                       <span class="kw">coef</span>(<span class="kw">summary</span>(fit_multgee))[<span class="st">&quot;occasion:treat&quot;</span>, <span class="st">&quot;san.se&quot;</span>]),</span>
+<span id="cb635-19"><a href="Random.html#cb635-19"></a>             <span class="co"># note the -1 because of the (weird negative) model specification</span></span>
+<span id="cb635-20"><a href="Random.html#cb635-20"></a>             <span class="dt">re_coef =</span> <span class="kw">c</span>(<span class="kw">coef</span>(fit_ordinal)[<span class="st">&quot;occasion&quot;</span>],</span>
+<span id="cb635-21"><a href="Random.html#cb635-21"></a>                         <span class="kw">coef</span>(fit_ordinal)[<span class="st">&quot;treat&quot;</span>],</span>
+<span id="cb635-22"><a href="Random.html#cb635-22"></a>                         <span class="kw">coef</span>(fit_ordinal)[<span class="st">&quot;occasion:treat&quot;</span>]) <span class="op">*</span><span class="st"> </span><span class="dv">-1</span>,</span>
+<span id="cb635-23"><a href="Random.html#cb635-23"></a>             <span class="dt">re_se =</span> <span class="kw">c</span>(<span class="kw">coef</span>(<span class="kw">summary</span>(fit_ordinal))[<span class="st">&quot;occasion&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>],</span>
+<span id="cb635-24"><a href="Random.html#cb635-24"></a>                       <span class="kw">coef</span>(<span class="kw">summary</span>(fit_ordinal))[<span class="st">&quot;treat&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>],</span>
+<span id="cb635-25"><a href="Random.html#cb635-25"></a>                       <span class="kw">coef</span>(<span class="kw">summary</span>(fit_ordinal))[<span class="st">&quot;occasion:treat&quot;</span>, </span>
+<span id="cb635-26"><a href="Random.html#cb635-26"></a>                                                  <span class="st">&quot;Std. Error&quot;</span>])) <span class="op">%&gt;%</span></span>
+<span id="cb635-27"><a href="Random.html#cb635-27"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="kw">across</span>(<span class="kw">where</span>(is.numeric), round, <span class="dv">3</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb635-28"><a href="Random.html#cb635-28"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">Marginal Model GEE</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(mm_coef, <span class="st">&quot; (&quot;</span>, mm_se, <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb635-29"><a href="Random.html#cb635-29"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="st">`</span><span class="dt">Random Effects Model (GLMM) ML</span><span class="st">`</span> =<span class="st"> </span><span class="kw">paste0</span>(re_coef, <span class="st">&quot; (&quot;</span>, re_se, <span class="st">&quot;)&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb635-30"><a href="Random.html#cb635-30"></a><span class="st">  </span><span class="kw">select</span>(Effect, <span class="st">`</span><span class="dt">Marginal Model GEE</span><span class="st">`</span>, <span class="st">`</span><span class="dt">Random Effects Model (GLMM) ML</span><span class="st">`</span>)</span>
+<span id="cb635-31"><a href="Random.html#cb635-31"></a>  </span>
+<span id="cb635-32"><a href="Random.html#cb635-32"></a><span class="kw">library</span>(flextable)</span>
+<span id="cb635-33"><a href="Random.html#cb635-33"></a><span class="kw">flextable</span>(<span class="st">`</span><span class="dt">Table 10.4</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb635-34"><a href="Random.html#cb635-34"></a><span class="st">   </span><span class="kw">set_caption</span>(<span class="dt">caption =</span> <span class="st">&quot;Results of fitting cumulative logit marginal model and random effects model to Table 9.2, with standard errors in parentheses.&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb635-35"><a href="Random.html#cb635-35"></a><span class="st">  </span><span class="kw">set_table_properties</span>(<span class="dt">width =</span> <span class="fl">.75</span>, <span class="dt">layout =</span> <span class="st">&quot;autofit&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb635-36"><a href="Random.html#cb635-36"></a><span class="st">  </span><span class="kw">align</span>(<span class="dt">align =</span> <span class="st">&quot;center&quot;</span>, <span class="dt">part =</span> <span class="st">&quot;all&quot;</span>) </span></code></pre></div>
+<template id="2cb0d1c9-5cf1-4258-bfa6-9a75096b3e7d"><style>
+.tabwid table{
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-883304d4{table-layout:auto;border-collapse:collapse;width:75%;}.cl-882f429a{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-882f4d6c{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;}.cl-882f6bbc{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-882f6bc6{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-882f6bd0{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-883304d4'>
+<caption class="Table Caption">
+<span id="tab:unnamed-chunk-127">Table 13: </span>Results of fitting cumulative logit marginal model and random effects model to Table 9.2, with standard errors in parentheses.
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-882f6bd0"><p class="cl-882f4d6c"><span class="cl-882f429a">Effect</span></p></td><td class="cl-882f6bd0"><p class="cl-882f4d6c"><span class="cl-882f429a">Marginal Model GEE</span></p></td><td class="cl-882f6bd0"><p class="cl-882f4d6c"><span class="cl-882f429a">Random Effects Model (GLMM) ML</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-882f6bbc"><p class="cl-882f4d6c"><span class="cl-882f429a">Occasion</span></p></td><td class="cl-882f6bbc"><p class="cl-882f4d6c"><span class="cl-882f429a">1.038 (0.168)</span></p></td><td class="cl-882f6bbc"><p class="cl-882f4d6c"><span class="cl-882f429a">1.602 (0.283)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-882f6bbc"><p class="cl-882f4d6c"><span class="cl-882f429a">Treatment</span></p></td><td class="cl-882f6bbc"><p class="cl-882f4d6c"><span class="cl-882f429a">0.034 (0.238)</span></p></td><td class="cl-882f6bbc"><p class="cl-882f4d6c"><span class="cl-882f429a">0.058 (0.366)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-882f6bc6"><p class="cl-882f4d6c"><span class="cl-882f429a">Treatment x Occasion</span></p></td><td class="cl-882f6bc6"><p class="cl-882f4d6c"><span class="cl-882f429a">0.708 (0.244)</span></p></td><td class="cl-882f6bc6"><p class="cl-882f4d6c"><span class="cl-882f429a">1.081 (0.38)</span></p></td></tr></tbody></table></div></template>
+<div id="7ed44038-a570-44bd-b5e6-cf6be802003b"></div>
+<script>
+var dest = document.getElementById("7ed44038-a570-44bd-b5e6-cf6be802003b");
+var template = document.getElementById("2cb0d1c9-5cf1-4258-bfa6-9a75096b3e7d");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;"
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+fantome.appendChild(templateContent);
+</script>
+
+</div>
+<div id="meta-analysis-bivariate-random-effects-for-association-heterogeneity" class="section level3">
+<h3>10.3.2 Meta-Analysis: Bivariate Random Effects for Association Heterogeneity</h3>
+<div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="Random.html#cb636-1"></a>Ulcers &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Ulcers.dat&quot;</span>,</span>
+<span id="cb636-2"><a href="Random.html#cb636-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb636-3"><a href="Random.html#cb636-3"></a></span>
+<span id="cb636-4"><a href="Random.html#cb636-4"></a>Ulcers <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb636-5"><a href="Random.html#cb636-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="kw">n</span>()<span class="op">-</span><span class="dv">1</span>, <span class="kw">n</span>()))  </span></code></pre></div>
+<pre class="custom-output"><code>  study treat  y  n
+1     1     1  7 15
+2     1     0 11 13
+3    41     1  0  9
+4    41     0  0 16</code></pre>
+<div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="Random.html#cb638-1"></a>fit &lt;-<span class="st"> </span></span>
+<span id="cb638-2"><a href="Random.html#cb638-2"></a><span class="st">  </span>lme4<span class="op">::</span><span class="kw">glmer</span>(y<span class="op">/</span>n <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>study) <span class="op">+</span><span class="st"> </span>treat, <span class="dt">family =</span> binomial, <span class="dt">weights =</span> n, <span class="dt">nAGQ =</span> <span class="dv">50</span>,</span>
+<span id="cb638-3"><a href="Random.html#cb638-3"></a>              <span class="dt">data =</span> Ulcers)</span>
+<span id="cb638-4"><a href="Random.html#cb638-4"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre class="custom-output"><code>Generalized linear mixed model fit by maximum likelihood (Adaptive
+  Gauss-Hermite Quadrature, nAGQ = 50) [glmerMod]
+ Family: binomial  ( logit )
+Formula: y/n ~ (1 | study) + treat
+   Data: Ulcers
+Weights: n
+
+     AIC      BIC   logLik deviance df.resid 
+   306.1    313.3   -150.0    300.1       79 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-4.1808 -0.7646  0.0229  0.9771  4.5243 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ study  (Intercept) 0.6721   0.8198  
+Number of obs: 82, groups:  study, 41
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -0.3212     0.1500  -2.142   0.0322 *  
+treat        -1.1728     0.1176  -9.969   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Correlation of Fixed Effects:
+      (Intr)
+treat -0.313</code></pre>
+<p><span class="math display" id="eq:eq104">\[\begin{equation} 
+  \mathrm{logit}[P(Y_{i1}= 1)] = u_i + \alpha + (\beta + v_1),\ \ \mathrm{logit}[P(Y_{i2}= 1)] = u_i + \alpha
+  \tag{29}
+\end{equation}\]</span></p>
+<div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="Random.html#cb640-1"></a>fit2 &lt;-<span class="st">  </span></span>
+<span id="cb640-2"><a href="Random.html#cb640-2"></a><span class="st">  </span>lme4<span class="op">::</span><span class="kw">glmer</span>(y<span class="op">/</span>n <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>treat<span class="op">|</span>study), <span class="dt">family =</span> binomial, <span class="dt">weights =</span> n, </span>
+<span id="cb640-3"><a href="Random.html#cb640-3"></a>              <span class="dt">data =</span> Ulcers)</span>
+<span id="cb640-4"><a href="Random.html#cb640-4"></a><span class="kw">summary</span>(fit2)</span></code></pre></div>
+<pre class="custom-output"><code>Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: y/n ~ (1 + treat | study)
+   Data: Ulcers
+Weights: n
+
+     AIC      BIC   logLik deviance df.resid 
+   466.9    476.5   -229.4    458.9       78 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.4935 -0.1543  0.0495  0.2850  1.1408 
+
+Random effects:
+ Groups Name        Variance Std.Dev. Corr 
+ study  (Intercept) 3.307    1.819         
+        treat       4.257    2.063    -0.93
+Number of obs: 82, groups:  study, 41
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  -1.2494     0.1626  -7.682 1.57e-14 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+</div>
+<div id="multilevel-hierarchical-models" class="section level2">
+<h2>10.4 Multilevel (Hierarchical) Models</h2>
+<div id="example-two-level-model-for-student-performance" class="section level3">
+<h3>10.4.1 Example: Two-Level Model for Student Performance</h3>
+</div>
+<div id="example-smoking-prevention-and-cessation-study" class="section level3">
+<h3>10.4.2 Example: Smoking Prevention and Cessation Study</h3>
+<div class="sourceCode" id="cb642"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb642-1"><a href="Random.html#cb642-1"></a>Smoking &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Smoking.dat&quot;</span>,</span>
+<span id="cb642-2"><a href="Random.html#cb642-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb642-3"><a href="Random.html#cb642-3"></a></span>
+<span id="cb642-4"><a href="Random.html#cb642-4"></a><span class="st">`</span><span class="dt">Table 10.6</span><span class="st">`</span> &lt;-<span class="st"> </span>Smoking <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb642-5"><a href="Random.html#cb642-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="kw">n</span>()))  <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb642-6"><a href="Random.html#cb642-6"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>y)</span>
+<span id="cb642-7"><a href="Random.html#cb642-7"></a></span>
+<span id="cb642-8"><a href="Random.html#cb642-8"></a><span class="kw">library</span>(flextable)</span>
+<span id="cb642-9"><a href="Random.html#cb642-9"></a><span class="kw">flextable</span>(<span class="st">`</span><span class="dt">Table 10.6</span><span class="st">`</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb642-10"><a href="Random.html#cb642-10"></a><span class="st">   </span><span class="kw">set_caption</span>(<span class="dt">caption =</span> <span class="st">&quot;Part of smoking prevention and cessation data file.&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb642-11"><a href="Random.html#cb642-11"></a><span class="st">  </span><span class="kw">set_table_properties</span>(<span class="dt">width =</span> <span class="fl">.75</span>, <span class="dt">layout =</span> <span class="st">&quot;autofit&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb642-12"><a href="Random.html#cb642-12"></a><span class="st">  </span><span class="kw">align</span>(<span class="dt">align =</span> <span class="st">&quot;center&quot;</span>, <span class="dt">part =</span> <span class="st">&quot;all&quot;</span>) </span></code></pre></div>
+<template id="1726af66-c46c-4473-bac6-a7ccdbbde24e"><style>
+.tabwid table{
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-88bd9d9c{table-layout:auto;border-collapse:collapse;width:75%;}.cl-88b9b9e8{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-88b9c546{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:3pt;padding-top:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;}.cl-88b9e5da{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-88b9e5ee{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-88b9e5f8{width:54pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(0, 0, 0, 1.00);border-top: 2pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-88bd9d9c'>
+<caption class="Table Caption">
+<span id="tab:unnamed-chunk-130">Table 14: </span>Part of smoking prevention and cessation data file.
+</caption>
+<thead><tr style="overflow-wrap:break-word;"><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">student</span></p></td><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">school</span></p></td><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">class</span></p></td><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">SC</span></p></td><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">TV</span></p></td><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">PTHK</span></p></td><td class="cl-88b9e5f8"><p class="cl-88b9c546"><span class="cl-88b9b9e8">THK</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">1</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">403</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">403,101</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">1</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">0</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">2</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">3</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">2</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">403</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">403,101</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">1</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">0</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">4</span></p></td><td class="cl-88b9e5da"><p class="cl-88b9c546"><span class="cl-88b9b9e8">4</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">1,600</span></p></td><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">515</span></p></td><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">515,113</span></p></td><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">0</span></p></td><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">0</span></p></td><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">3</span></p></td><td class="cl-88b9e5ee"><p class="cl-88b9c546"><span class="cl-88b9b9e8">3</span></p></td></tr></tbody></table></div></template>
+<div id="e247d03d-b76a-4b53-9906-75cccef49b6c"></div>
+<script>
+var dest = document.getElementById("e247d03d-b76a-4b53-9906-75cccef49b6c");
+var template = document.getElementById("1726af66-c46c-4473-bac6-a7ccdbbde24e");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;"
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+fantome.appendChild(templateContent);
+</script>
+
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="Random.html#cb643-1"></a>Smoking &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Smoking.dat&quot;</span>,</span>
+<span id="cb643-2"><a href="Random.html#cb643-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb643-3"><a href="Random.html#cb643-3"></a></span>
+<span id="cb643-4"><a href="Random.html#cb643-4"></a>Smoking <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb643-5"><a href="Random.html#cb643-5"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">n</span>()))  </span></code></pre></div>
+<pre class="custom-output"><code>  student school  class SC TV PTHK THK y
+1       1    403 403101  1  0    2   3 1
+2    1600    515 515113  0  0    3   3 1</code></pre>
+<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="Random.html#cb645-1"></a>fit &lt;-<span class="st">  </span></span>
+<span id="cb645-2"><a href="Random.html#cb645-2"></a><span class="st">  </span>lme4<span class="op">::</span><span class="kw">glmer</span>(y <span class="op">~</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>class) <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>school) <span class="op">+</span><span class="st"> </span>PTHK <span class="op">+</span><span class="st"> </span>SC <span class="op">+</span><span class="st"> </span>TV, <span class="dt">family =</span> binomial, </span>
+<span id="cb645-3"><a href="Random.html#cb645-3"></a>              <span class="dt">data =</span> Smoking)</span>
+<span id="cb645-4"><a href="Random.html#cb645-4"></a><span class="kw">summary</span>(fit)</span></code></pre></div>
+<pre class="custom-output"><code>Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: y ~ (1 | class) + (1 | school) + PTHK + SC + TV
+   Data: Smoking
+
+     AIC      BIC   logLik deviance df.resid 
+  2070.2   2102.5  -1029.1   2058.2     1594 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.9905 -0.8823  0.4645  0.8379  2.0923 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ class  (Intercept) 0.16728  0.4090  
+ school (Intercept) 0.06413  0.2532  
+Number of obs: 1600, groups:  class, 135; school, 28
+
+Fixed effects:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -1.13163    0.17827  -6.348 2.18e-10 ***
+PTHK         0.39512    0.04627   8.539  &lt; 2e-16 ***
+SC           0.80014    0.16893   4.737 2.17e-06 ***
+TV           0.10786    0.16819   0.641    0.521    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Correlation of Fixed Effects:
+     (Intr) PTHK   SC    
+PTHK -0.576              
+SC   -0.498  0.082       
+TV   -0.494  0.023 -0.005</code></pre>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="Random.html#cb647-1"></a>fit.glm &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>PTHK <span class="op">+</span><span class="st"> </span>SC <span class="op">+</span><span class="st"> </span>TV, <span class="dt">family =</span> binomial, <span class="dt">data =</span> Smoking)</span>
+<span id="cb647-2"><a href="Random.html#cb647-2"></a><span class="kw">summary</span>(fit.glm)</span></code></pre></div>
+<pre class="custom-output"><code>
+Call:
+glm(formula = y ~ PTHK + SC + TV, family = binomial, data = Smoking)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.1313  -1.0944   0.6746   1.0936   1.6744  
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept) -1.11920    0.13127  -8.526  &lt; 2e-16 ***
+PTHK         0.39886    0.04401   9.063  &lt; 2e-16 ***
+SC           0.76532    0.10563   7.245 4.32e-13 ***
+TV           0.12305    0.10462   1.176     0.24    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 2212.5  on 1599  degrees of freedom
+Residual deviance: 2077.2  on 1596  degrees of freedom
+AIC: 2085.2
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+</div>
+<div id="latent-class-models" class="section level2">
+<h2>10.5 Latent Class Models *</h2>
+<div id="independence-given-a-latent-categorical-variable" class="section level3">
+<h3>10.5.1 Independence Given a Latent Categorical Variable</h3>
+</div>
+<div id="example-latent-class-model-for-rater-agreement" class="section level3">
+<h3>10.5.2 Example: Latent Class Model for Rater Agreement</h3>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="Random.html#cb649-1"></a>Carcinoma &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="st">&quot;http://users.stat.ufl.edu/~aa/cat/data/Carcinoma.dat&quot;</span>,</span>
+<span id="cb649-2"><a href="Random.html#cb649-2"></a>                        <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb649-3"><a href="Random.html#cb649-3"></a></span>
+<span id="cb649-4"><a href="Random.html#cb649-4"></a>Carcinoma &lt;-<span class="st"> </span><span class="op">-</span>Carcinoma <span class="op">+</span><span class="st"> </span><span class="dv">2</span></span>
+<span id="cb649-5"><a href="Random.html#cb649-5"></a></span>
+<span id="cb649-6"><a href="Random.html#cb649-6"></a>Carcinoma <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb649-7"><a href="Random.html#cb649-7"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">row_number</span>() <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">n</span>()))  </span>
+<span id="cb649-8"><a href="Random.html#cb649-8"></a></span>
+<span id="cb649-9"><a href="Random.html#cb649-9"></a><span class="kw">library</span>(poLCA)</span>
+<span id="cb649-10"><a href="Random.html#cb649-10"></a><span class="kw">poLCA</span>(<span class="kw">cbind</span>(A, B, C, D, E, F, G) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">nclass =</span> <span class="dv">1</span>, <span class="dt">data =</span> Carcinoma)</span>
+<span id="cb649-11"><a href="Random.html#cb649-11"></a></span>
+<span id="cb649-12"><a href="Random.html#cb649-12"></a><span class="kw">poLCA</span>(<span class="kw">cbind</span>(A, B, C, D, E, F, G) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">nclass =</span> <span class="dv">2</span>, <span class="dt">nrep =</span> <span class="dv">9</span>, <span class="dt">data =</span> Carcinoma)</span>
+<span id="cb649-13"><a href="Random.html#cb649-13"></a></span>
+<span id="cb649-14"><a href="Random.html#cb649-14"></a><span class="kw">poLCA</span>(<span class="kw">cbind</span>(A, B, C, D, E, F, G) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">nclass =</span> <span class="dv">3</span>, <span class="dt">nrep =</span> <span class="dv">9</span>, <span class="dt">data =</span> Carcinoma)</span>
+<span id="cb649-15"><a href="Random.html#cb649-15"></a></span>
+<span id="cb649-16"><a href="Random.html#cb649-16"></a><span class="kw">poLCA</span>(<span class="kw">cbind</span>(A, B, C, D, E, F, G) <span class="op">~</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">nclass =</span> <span class="dv">4</span>, <span class="dt">nrep =</span> <span class="dv">9</span>, <span class="dt">data =</span> Carcinoma)</span></code></pre></div>
+</div>
+</div>
+<div id="exercises-2" class="section level2">
+<h2>Exercises</h2>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="Marginal.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="Classification.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": false
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
