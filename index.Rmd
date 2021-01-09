@@ -27,6 +27,10 @@ suppressPackageStartupMessages(library(tidyverse))
 knitr::opts_chunk$set(class.output = "custom-output")
 ```
 
+# 0 Prelude
+
+The repository with the R Bookdown code for this booklet can be found here:  https://github.com/RaymondBalise/Agresti_IntroToCategorical
+
 # 1 Introduction{#intro}
 
 ## 1.1 Categorical Response Data
