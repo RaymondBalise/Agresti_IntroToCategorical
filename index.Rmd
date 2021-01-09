@@ -1,6 +1,6 @@
 --- 
 title: "Notes for Agresti's Introduction to Categorical Data Analysis 3rd Edition"
-author: "Raymond R. Balise and Wayne F. DeFreitas"
+author: "Raymond R. Balise with help from Wayne F. DeFreitas"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
