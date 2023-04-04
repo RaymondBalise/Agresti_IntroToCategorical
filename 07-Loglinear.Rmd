@@ -549,7 +549,7 @@ Cancer <- read.table("http://users.stat.ufl.edu/~aa/cat/data/Cancer.dat",
 
 cancerCountWide <- Cancer %>% 
   select(-risktime) %>% 
-  pivot_wider(id = time, names_from = c(histology, stage), 
+  pivot_wider(id_cols = time, names_from = c(histology, stage), 
               values_from=count) %>% 
   mutate(time = case_when(time == 1 ~ "0-2",
                           time == 2 ~ "2-4",
@@ -564,7 +564,7 @@ cancerCountWide <- Cancer %>%
 cancerRiskTimeWide <- Cancer %>% 
   select(-count) %>% 
   mutate(risktime = paste0("(", risktime, ")")) %>% 
-  pivot_wider(id = time, names_from = c(histology, stage), 
+  pivot_wider(id_cols = time, names_from = c(histology, stage), 
               values_from=risktime) %>% 
   mutate(time = case_when(time == 1 ~ "0-2",
                           time == 2 ~ "2-4",
